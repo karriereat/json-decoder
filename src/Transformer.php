@@ -14,6 +14,11 @@ abstract class Transformer
      */
     private $jsonDecoder;
 
+    /**
+     * add field to property bindings
+     *
+     * @return void
+     */
     abstract public function bind();
 
     /**
@@ -42,11 +47,25 @@ abstract class Transformer
         return $instance;
     }
 
+    /**
+     * adds a json field binding to the given class property
+     *
+     * @param $jsonField string the json field name
+     * @param $classProperty string the class property
+     * @param string|null $type the type of the value to bind
+     */
     protected function bindField($jsonField, $classProperty, $type = null)
     {
         $this->fields[$jsonField] = new Field($jsonField, $classProperty, $type);
     }
 
+    /**
+     * adds a json array binding to the given class property
+     *
+     * @param $jsonField string the json field name
+     * @param $classProperty string the class property
+     * @param string|null $type the type of the value to bind
+     */
     protected function bindArray($jsonField, $classProperty, $type = null)
     {
         $this->arrayFields[$jsonField] = new Field($jsonField, $classProperty, $type);

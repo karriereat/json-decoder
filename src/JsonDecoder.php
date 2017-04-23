@@ -10,12 +10,24 @@ class JsonDecoder
     {
     }
 
+    /**
+     * registers the given transformer
+     *
+     * @param Transformer $transformer
+     */
     public function register(Transformer $transformer)
     {
         $this->transformers[$transformer->transforms()] = $transformer;
         $transformer->initialize($this);
     }
 
+    /**
+     * decodes the given array data into an instance of the given class type
+     *
+     * @param $jsonArrayData array
+     * @param $classType string
+     * @return mixed an instance of $classType
+     */
     public function decode($jsonArrayData, $classType)
     {
         $instance = new $classType();
