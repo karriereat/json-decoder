@@ -11,7 +11,10 @@ You can install the package via composer
 composer require karriere/json-decoder
 ```
 
-## Basic usage
+## Usage
+By default all not defined fields of the input json will be stored in a class property with the same name.
+
+### A simple example
 Assume you have a class `Person` that looks like this:
 ```php
 class Person {
@@ -30,8 +33,6 @@ $arrayData = json_decode($jsonData, true);
 $person = $jsonDecoder->decode($arrayData, Person::class);
 
 ```
-
-## Defining a Transformer
 
 ## License
 
