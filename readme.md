@@ -3,7 +3,7 @@
 
 # JsonDecoder for PHP
 
-This package contains a JsonDecoder implementation that allows you to convert your json data into real php class objects.
+This package contains a JsonDecoder implementation that allows you to convert your json data into php class objects other than `stdclass`.
 
 ## Installation
 You can install the package via composer
