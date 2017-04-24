@@ -15,6 +15,7 @@ class JsonDecoder
 
     /**
      * JsonDecoder constructor.
+     *
      * @param bool $decodePrivateProperties
      * @param bool $decodeProtectedProperties
      */
@@ -25,7 +26,7 @@ class JsonDecoder
     }
 
     /**
-     * registers the given transformer
+     * registers the given transformer.
      *
      * @param Transformer $transformer
      */
@@ -40,10 +41,11 @@ class JsonDecoder
     }
 
     /**
-     * decodes the given array data into an instance of the given class type
+     * decodes the given array data into an instance of the given class type.
      *
      * @param $jsonArrayData array
      * @param $classType string
+     *
      * @return mixed an instance of $classType
      */
     public function decodeArray($jsonArrayData, $classType)

@@ -5,7 +5,7 @@ namespace Karriere\JsonDecoder;
 interface Transformer
 {
     /**
-     * register field, array, alias and callback bindings
+     * register field, array, alias and callback bindings.
      *
      * @param ClassBindings $classBindings
      */

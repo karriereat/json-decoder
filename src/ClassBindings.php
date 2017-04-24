@@ -22,10 +22,11 @@ class ClassBindings
     }
 
     /**
-     * decodes all available properties of the given class instance
+     * decodes all available properties of the given class instance.
      *
      * @param array $data
      * @param midex $instance
+     *
      * @return mixed
      */
     public function decode($data, $instance)
@@ -80,9 +81,10 @@ class ClassBindings
     }
 
     /**
-     * checks for a binding for the given property
+     * checks for a binding for the given property.
      *
      * @param string $property
+     *
      * @return bool
      */
     private function hasBinding($property)
