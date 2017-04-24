@@ -107,7 +107,7 @@ new ArrayBinding($property, $jsonField, $type);
 ```
 This defines a field mapping for the property `$property` to an array of class instance of type `$type` with data in `$jsonField`.
 
-### AliasBinding
+#### AliasBinding
 Defines a json field to property binding.
 
 **Signature:**
