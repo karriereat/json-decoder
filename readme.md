@@ -1,5 +1,6 @@
 <a href="https://www.karriere.at/" target="_blank"><img width="200" src="http://www.karriere.at/images/layout/katlogo.svg"></a>
 <span>&nbsp;&nbsp;&nbsp;</span>
+[![StyleCI](https://styleci.io/repos/89163851/shield?branch=master)](https://styleci.io/repos/89163851)
 
 # JsonDecoder for PHP
 
