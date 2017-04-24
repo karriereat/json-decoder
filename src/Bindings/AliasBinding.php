@@ -21,7 +21,7 @@ class AliasBinding implements Binding
     /**
      * AliasBinding constructor.
      *
-     * @param string $property the property to bind to
+     * @param string $property  the property to bind to
      * @param string $jsonField the json field
      */
     public function __construct($property, $jsonField)
@@ -31,13 +31,15 @@ class AliasBinding implements Binding
     }
 
     /**
-     * executes the defined binding method on the class instance
+     * executes the defined binding method on the class instance.
      *
      * @param JsonDecoder $jsonDecoder
-     * @param mixed $jsonData
-     * @param mixed $instance the class instance to bind to
-     * @return mixed
+     * @param mixed       $jsonData
+     * @param mixed       $instance    the class instance to bind to
+     *
      * @throws JsonValueException if given json field is not available
+     *
+     * @return mixed
      */
     public function bind($jsonDecoder, $jsonData, $instance)
     {
