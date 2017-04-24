@@ -4,10 +4,24 @@ namespace Karriere\JsonDecoder;
 
 class JsonDecoder
 {
+    /**
+     * @var array
+     */
     private $transformers = [];
 
-    public function __construct()
+    private $decodePrivateProperties;
+
+    private $decodeProtectedProperties;
+
+    /**
+     * JsonDecoder constructor.
+     * @param bool $decodePrivateProperties
+     * @param bool $decodeProtectedProperties
+     */
+    public function __construct($decodePrivateProperties = false, $decodeProtectedProperties = false)
     {
+        $this->decodePrivateProperties = $decodePrivateProperties;
+        $this->decodeProtectedProperties = $decodeProtectedProperties;
     }
 
     /**
@@ -18,7 +32,11 @@ class JsonDecoder
     public function register(Transformer $transformer)
     {
         $this->transformers[$transformer->transforms()] = $transformer;
-        $transformer->initialize($this);
+    }
+
+    public function decode($jsonString, $classType)
+    {
+        return $this->decodeArray(json_decode($jsonString, true), $classType);
     }
 
     /**
@@ -28,17 +46,35 @@ class JsonDecoder
      * @param $classType string
      * @return mixed an instance of $classType
      */
-    public function decode($jsonArrayData, $classType)
+    public function decodeArray($jsonArrayData, $classType)
     {
         $instance = new $classType();
 
         if (array_key_exists($classType, $this->transformers)) {
-            $instance = $this->transformers[$classType]->decode($jsonArrayData, $instance);
+            $instance = $this->transform($this->transformers[$classType], $jsonArrayData, $instance);
         } else {
             $instance = $this->transformRaw($jsonArrayData, $instance);
         }
 
         return $instance;
+    }
+
+    public function decodesPrivateProperties()
+    {
+        return $this->decodePrivateProperties;
+    }
+
+    public function decodesProtectedProperties()
+    {
+        return $this->decodeProtectedProperties;
+    }
+
+    private function transform($transformer, $jsonArrayData, $instance)
+    {
+        $classBindings = new ClassBindings($this);
+        $transformer->register($classBindings);
+
+        return $classBindings->decode($jsonArrayData, $instance);
     }
 
     protected function transformRaw($jsonArrayData, $instance)
