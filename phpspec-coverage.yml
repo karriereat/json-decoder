@@ -1,0 +1,15 @@
+suites:
+    main:
+        namespace: Karriere\JsonDecoder
+        psr4_prefix: Karriere\JsonDecoder
+        src_path: src
+        spec_prefix: tests\specs
+
+extensions:
+  LeanPHP\PhpSpec\CodeCoverage\CodeCoverageExtension:
+    format:
+      - html
+      - clover
+    output:
+      html: coverage
+      clover: coverage.xml

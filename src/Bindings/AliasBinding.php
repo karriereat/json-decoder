@@ -5,6 +5,7 @@ namespace Karriere\JsonDecoder\Bindings;
 use Karriere\JsonDecoder\Binding;
 use Karriere\JsonDecoder\Exceptions\JsonValueException;
 use Karriere\JsonDecoder\JsonDecoder;
+use Karriere\JsonDecoder\PropertyAccessor;
 
 class AliasBinding implements Binding
 {
@@ -35,13 +36,13 @@ class AliasBinding implements Binding
      *
      * @param JsonDecoder $jsonDecoder
      * @param mixed       $jsonData
-     * @param mixed       $instance    the class instance to bind to
+     * @param PropertyAccessor $propertyAccessor    the class instance to bind to
      *
      * @throws JsonValueException if given json field is not available
      *
      * @return mixed
      */
-    public function bind($jsonDecoder, $jsonData, $instance)
+    public function bind($jsonDecoder, $jsonData, $propertyAccessor)
     {
         if (!array_key_exists($this->jsonField, $jsonData)) {
             throw new JsonValueException(
@@ -49,7 +50,7 @@ class AliasBinding implements Binding
             );
         }
 
-        $instance->{$this->property} = $jsonData[$this->jsonField];
+        $propertyAccessor->set($jsonData[$this->jsonField]);
     }
 
     /**

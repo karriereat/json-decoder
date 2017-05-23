@@ -27,14 +27,14 @@ class RawBinding implements Binding
      *
      * @param JsonDecoder $jsonDecoder
      * @param mixed       $jsonData
-     * @param mixed       $instance    the class instance to bind to
+     * @param mixed       $propertyAccessor    the class instance to bind to
      *
      * @return mixed
      */
-    public function bind($jsonDecoder, $jsonData, $instance)
+    public function bind($jsonDecoder, $jsonData, $propertyAccessor)
     {
         if (array_key_exists($this->property, $jsonData)) {
-            $instance->{$this->property} = $jsonData[$this->property];
+            $propertyAccessor->set($jsonData[$this->property]);
         }
     }
 

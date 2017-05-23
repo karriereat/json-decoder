@@ -5,6 +5,7 @@ namespace Karriere\JsonDecoder\Bindings;
 use Karriere\JsonDecoder\Binding;
 use Karriere\JsonDecoder\Exceptions\JsonValueException;
 use Karriere\JsonDecoder\JsonDecoder;
+use Karriere\JsonDecoder\PropertyAccessor;
 
 class FieldBinding implements Binding
 {
@@ -42,13 +43,13 @@ class FieldBinding implements Binding
      *
      * @param JsonDecoder $jsonDecoder
      * @param array       $jsonData
-     * @param mixed       $instance    the class instance to bind to
+     * @param PropertyAccessor       $propertyAccessor    the class instance to bind to
      *
      * @throws JsonValueException if given json field is not available
      *
      * @return mixed
      */
-    public function bind($jsonDecoder, $jsonData, $instance)
+    public function bind($jsonDecoder, $jsonData, $propertyAccessor)
     {
         if (!array_key_exists($this->jsonField, $jsonData)) {
             throw new JsonValueException(
@@ -57,7 +58,7 @@ class FieldBinding implements Binding
         }
 
         $data = $jsonData[$this->jsonField];
-        $instance->{$this->property} = $jsonDecoder->decodeArray($data, $this->type);
+        $propertyAccessor->set($jsonDecoder->decodeArray($data, $this->type));
     }
 
     /**
