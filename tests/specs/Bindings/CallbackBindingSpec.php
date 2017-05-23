@@ -9,22 +9,24 @@ use PhpSpec\ObjectBehavior;
 
 class CallbackBindingSpec extends ObjectBehavior
 {
-    function let()
+    public function let()
     {
-        $this->beConstructedWith('property', function() { return "some callback data"; });
+        $this->beConstructedWith('property', function () {
+            return 'some callback data';
+        });
     }
 
-    function it_is_initializable()
+    public function it_is_initializable()
     {
         $this->shouldHaveType(CallbackBinding::class);
     }
 
-    function it_should_return_the_property_name()
+    public function it_should_return_the_property_name()
     {
         $this->property()->shouldReturn('property');
     }
 
-    function it_should_execute_the_callback_and_store_the_result(JsonDecoder $jsonDecoder, PropertyAccessor $propertyAccessor)
+    public function it_should_execute_the_callback_and_store_the_result(JsonDecoder $jsonDecoder, PropertyAccessor $propertyAccessor)
     {
         $propertyAccessor->set('some callback data')->shouldBeCalled();
 

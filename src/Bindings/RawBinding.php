@@ -27,7 +27,7 @@ class RawBinding implements Binding
      *
      * @param JsonDecoder $jsonDecoder
      * @param mixed       $jsonData
-     * @param mixed       $propertyAccessor    the class instance to bind to
+     * @param mixed       $propertyAccessor the class instance to bind to
      *
      * @return mixed
      */

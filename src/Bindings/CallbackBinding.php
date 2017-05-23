@@ -21,7 +21,7 @@ class CallbackBinding implements Binding
     /**
      * CallbackBinding constructor.
      *
-     * @param string $property
+     * @param string   $property
      * @param callable $callback
      */
     public function __construct($property, $callback)
@@ -33,8 +33,8 @@ class CallbackBinding implements Binding
     /**
      * executes the defined binding method on the class instance.
      *
-     * @param JsonDecoder $jsonDecoder
-     * @param mixed $jsonData
+     * @param JsonDecoder      $jsonDecoder
+     * @param mixed            $jsonData
      * @param PropertyAccessor $propertyAccessor the class instance to bind to
      *
      * @return mixed
