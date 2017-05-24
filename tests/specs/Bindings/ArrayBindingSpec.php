@@ -10,27 +10,27 @@ use PhpSpec\ObjectBehavior;
 
 class ArrayBindingSpec extends ObjectBehavior
 {
-    function let()
+    public function let()
     {
         $this->beConstructedWith('property', 'field', Sample::class);
     }
 
-    function it_is_initializable()
+    public function it_is_initializable()
     {
         $this->shouldHaveType(ArrayBinding::class);
     }
 
-    function it_should_return_the_property_name()
+    public function it_should_return_the_property_name()
     {
         $this->property()->shouldReturn('property');
     }
 
-    function it_should_throw_anc_exception_if_json_field_does_not_exist(JsonDecoder $jsonDecoder, PropertyAccessor $propertyAccessor)
+    public function it_should_throw_anc_exception_if_json_field_does_not_exist(JsonDecoder $jsonDecoder, PropertyAccessor $propertyAccessor)
     {
         $this->shouldThrow(JsonValueException::class)->duringBind($jsonDecoder, [], $propertyAccessor);
     }
 
-    function it_should_decode_the_array(JsonDecoder $jsonDecoder, PropertyAccessor $propertyAccessor)
+    public function it_should_decode_the_array(JsonDecoder $jsonDecoder, PropertyAccessor $propertyAccessor)
     {
         $jsonDecoder->decodeArray([], Sample::class)->shouldBeCalledTimes(2);
 
@@ -38,6 +38,7 @@ class ArrayBindingSpec extends ObjectBehavior
     }
 }
 
-class Sample {
+class Sample
+{
     public $property;
 }

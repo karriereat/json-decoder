@@ -27,9 +27,9 @@ class ArrayBinding implements Binding
     /**
      * ArrayBinding constructor.
      *
-     * @param string $property the property to bind to
+     * @param string $property  the property to bind to
      * @param string $jsonField the json field
-     * @param string $type the desired type of the property
+     * @param string $type      the desired type of the property
      */
     public function __construct($property, $jsonField, $type)
     {
@@ -41,8 +41,8 @@ class ArrayBinding implements Binding
     /**
      * executes the defined binding method on the class instance.
      *
-     * @param JsonDecoder $jsonDecoder
-     * @param array $jsonData
+     * @param JsonDecoder      $jsonDecoder
+     * @param array            $jsonData
      * @param PropertyAccessor $propertyAccessor the class instance to bind to
      *
      * @throws JsonValueException if given json field is not available
