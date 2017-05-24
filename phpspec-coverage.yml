@@ -15,3 +15,5 @@ code_coverage:
   output:
     html: coverage
     clover: coverage.xml
+
+formatter.name: pretty
