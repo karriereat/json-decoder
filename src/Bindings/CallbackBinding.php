@@ -4,6 +4,7 @@ namespace Karriere\JsonDecoder\Bindings;
 
 use Karriere\JsonDecoder\Binding;
 use Karriere\JsonDecoder\JsonDecoder;
+use Karriere\JsonDecoder\PropertyAccessor;
 
 class CallbackBinding implements Binding
 {
@@ -32,15 +33,15 @@ class CallbackBinding implements Binding
     /**
      * executes the defined binding method on the class instance.
      *
-     * @param JsonDecoder $jsonDecoder
-     * @param mixed       $jsonData
-     * @param mixed       $instance    the class instance to bind to
+     * @param JsonDecoder      $jsonDecoder
+     * @param mixed            $jsonData
+     * @param PropertyAccessor $propertyAccessor the class instance to bind to
      *
      * @return mixed
      */
-    public function bind($jsonDecoder, $jsonData, $instance)
+    public function bind($jsonDecoder, $jsonData, $propertyAccessor)
     {
-        $instance->{$this->property} = $this->callback->__invoke($jsonData);
+        $propertyAccessor->set($this->callback->__invoke($jsonData));
     }
 
     /**

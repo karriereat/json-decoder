@@ -3,6 +3,7 @@
 namespace Karriere\JsonDecoder;
 
 use Karriere\JsonDecoder\Bindings\RawBinding;
+use Karriere\JsonDecoder\Exceptions\InvalidBindingException;
 
 class ClassBindings
 {
@@ -25,7 +26,7 @@ class ClassBindings
      * decodes all available properties of the given class instance.
      *
      * @param array $data
-     * @param midex $instance
+     * @param mixed $instance
      *
      * @return mixed
      */
@@ -53,19 +54,15 @@ class ClassBindings
                 }
             }
 
-            if ($needsProxy) {
-                $decodeable = new AccessProxy($property, $instance);
-            } else {
-                $decodeable = $instance;
-            }
+            $propertyAccessor = new PropertyAccessor($property, $instance, $needsProxy);
 
             $propertyName = $property->getName();
             if ($this->hasBinding($propertyName)) {
                 /** @var Binding $binding */
                 $binding = $this->bindings[$propertyName];
-                $binding->bind($this->jsonDecoder, $data, $decodeable);
+                $binding->bind($this->jsonDecoder, $data, $propertyAccessor);
             } else {
-                $this->handleRaw($propertyName, $data, $decodeable);
+                $this->handleRaw($propertyName, $data, $propertyAccessor);
             }
         }
 
@@ -74,9 +71,15 @@ class ClassBindings
 
     /**
      * @param Binding $binding
+     *
+     * @throws InvalidBindingException
      */
     public function register($binding)
     {
+        if (!$binding instanceof Binding) {
+            throw new InvalidBindingException('the given binding must implement the Binding interface');
+        }
+
         $this->bindings[$binding->property()] = $binding;
     }
 
@@ -92,8 +95,8 @@ class ClassBindings
         return array_key_exists($property, $this->bindings);
     }
 
-    private function handleRaw($property, $data, $instance)
+    private function handleRaw($property, $data, $propertyAccessor)
     {
-        (new RawBinding($property))->bind($this->jsonDecoder, $data, $instance);
+        (new RawBinding($property))->bind($this->jsonDecoder, $data, $propertyAccessor);
     }
 }
