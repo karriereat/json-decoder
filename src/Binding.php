@@ -7,8 +7,8 @@ interface Binding
     /**
      * executes the defined binding method on the class instance.
      *
-     * @param JsonDecoder $jsonDecoder
-     * @param mixed $jsonData
+     * @param JsonDecoder      $jsonDecoder
+     * @param mixed            $jsonData
      * @param PropertyAccessor $propertyAccessor the class instance to bind to
      *
      * @return mixed

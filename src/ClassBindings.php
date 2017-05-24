@@ -77,7 +77,7 @@ class ClassBindings
     public function register($binding)
     {
         if (!$binding instanceof Binding) {
-            throw new InvalidBindingException("the given binding must implement the Binding interface");
+            throw new InvalidBindingException('the given binding must implement the Binding interface');
         }
 
         $this->bindings[$binding->property()] = $binding;

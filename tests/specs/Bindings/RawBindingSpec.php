@@ -10,29 +10,29 @@ use Prophecy\Argument;
 
 class RawBindingSpec extends ObjectBehavior
 {
-    function let()
+    public function let()
     {
         $this->beConstructedWith('property');
     }
 
-    function it_is_initializable()
+    public function it_is_initializable()
     {
         $this->shouldHaveType(RawBinding::class);
     }
 
-    function it_should_return_the_property_name()
+    public function it_should_return_the_property_name()
     {
         $this->property()->shouldReturn('property');
     }
 
-    function it_should_not_do_anything_if_json_field_does_not_exist(JsonDecoder $jsonDecoder, PropertyAccessor $propertyAccessor)
+    public function it_should_not_do_anything_if_json_field_does_not_exist(JsonDecoder $jsonDecoder, PropertyAccessor $propertyAccessor)
     {
         $propertyAccessor->set(Argument::any())->shouldNotBeCalled();
 
         $this->bind($jsonDecoder, [], $propertyAccessor);
     }
 
-    function it_should_assign_the_json_value_to_the_property(JsonDecoder $jsonDecoder, PropertyAccessor $propertyAccessor)
+    public function it_should_assign_the_json_value_to_the_property(JsonDecoder $jsonDecoder, PropertyAccessor $propertyAccessor)
     {
         $propertyAccessor->set('value')->shouldBeCalled();
 
@@ -40,6 +40,7 @@ class RawBindingSpec extends ObjectBehavior
     }
 }
 
-class RawBindingSample {
+class RawBindingSample
+{
     public $property;
 }

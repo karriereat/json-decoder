@@ -9,20 +9,19 @@ use Prophecy\Argument;
 
 class PropertyAccessorSpec extends ObjectBehavior
 {
-    function let(\ReflectionProperty $reflectionProperty, SampleClass $sampleClass)
+    public function let(\ReflectionProperty $reflectionProperty, SampleClass $sampleClass)
     {
         $this->beConstructedWith($reflectionProperty, $sampleClass, false);
     }
 
-    function it_is_initializable()
+    public function it_is_initializable()
     {
         $this->shouldHaveType(PropertyAccessor::class);
     }
 
-    function it_should_use_normal_set_for_public_properties(\ReflectionProperty $reflectionProperty, SampleClass $sampleClass)
+    public function it_should_use_normal_set_for_public_properties(\ReflectionProperty $reflectionProperty, SampleClass $sampleClass)
     {
-        /** @var Collaborator $sampleClass */
-
+        /* @var Collaborator $sampleClass */
 
         $reflectionProperty->getName()->willReturn('property')->shouldBeCalled();
         $reflectionProperty->setAccessible(Argument::any())->shouldNotBeCalled();
@@ -31,7 +30,7 @@ class PropertyAccessorSpec extends ObjectBehavior
         $this->set('value');
     }
 
-    function it_should_use_the_reflection_property_for_private_property(\ReflectionProperty $reflectionProperty, SampleClass $sampleClass)
+    public function it_should_use_the_reflection_property_for_private_property(\ReflectionProperty $reflectionProperty, SampleClass $sampleClass)
     {
         $this->beConstructedWith($reflectionProperty, $sampleClass, true);
 
