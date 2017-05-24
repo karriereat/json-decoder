@@ -19,7 +19,7 @@
         "php": ">=5.6"
     },
     "require-dev": {
-        "karriere/code-quality": "^3.0"
+        "karriere/code-quality": "^2.0"
     },
     "scripts": {
         "test": "vendor/bin/phpspec run",

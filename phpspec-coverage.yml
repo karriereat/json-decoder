@@ -6,10 +6,12 @@ suites:
         spec_prefix: tests\specs
 
 extensions:
-  LeanPHP\PhpSpec\CodeCoverage\CodeCoverageExtension:
-    format:
-      - html
-      - clover
-    output:
-      html: coverage
-      clover: coverage.xml
+    PhpSpecCodeCoverage\CodeCoverageExtension: ~
+
+code_coverage:
+  format:
+    - html
+    - clover
+  output:
+    html: coverage
+    clover: coverage.xml
