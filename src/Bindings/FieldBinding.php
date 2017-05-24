@@ -41,9 +41,9 @@ class FieldBinding implements Binding
     /**
      * executes the defined binding method on the class instance.
      *
-     * @param JsonDecoder $jsonDecoder
-     * @param array       $jsonData
-     * @param PropertyAccessor       $propertyAccessor    the class instance to bind to
+     * @param JsonDecoder      $jsonDecoder
+     * @param array            $jsonData
+     * @param PropertyAccessor $propertyAccessor the class instance to bind to
      *
      * @throws JsonValueException if given json field is not available
      *
