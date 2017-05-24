@@ -11,27 +11,27 @@ use PhpSpec\ObjectBehavior;
 
 class ClassBindingsSpec extends ObjectBehavior
 {
-    function let(JsonDecoder $jsonDecoder)
+    public function let(JsonDecoder $jsonDecoder)
     {
         $this->beConstructedWith($jsonDecoder);
     }
 
-    function it_is_initializable()
+    public function it_is_initializable()
     {
         $this->shouldHaveType(ClassBindings::class);
     }
 
-    function it_should_register_a_binding(Binding $binding)
+    public function it_should_register_a_binding(Binding $binding)
     {
         $this->register($binding);
     }
 
-    function it_should_throw_an_exception_if_no_binding_is_passed_to_register()
+    public function it_should_throw_an_exception_if_no_binding_is_passed_to_register()
     {
-        $this->shouldThrow(InvalidBindingException::class)->duringRegister("foo");
+        $this->shouldThrow(InvalidBindingException::class)->duringRegister('foo');
     }
 
-    function it_should_set_raw_data()
+    public function it_should_set_raw_data()
     {
         $instance = new Sample();
 
@@ -40,14 +40,14 @@ class ClassBindingsSpec extends ObjectBehavior
         $response->publicField->shouldBe('data');
     }
 
-    function it_should_only_decode_public_data()
+    public function it_should_only_decode_public_data()
     {
         $instance = new Sample();
 
         $response = $this->decode([
-            'publicField' => 'data',
+            'publicField'    => 'data',
             'protectedField' => 'protected data',
-            'privateField' => 'private data',
+            'privateField'   => 'private data',
         ], $instance);
 
         $response->publicData()->shouldReturn('data');
@@ -55,7 +55,7 @@ class ClassBindingsSpec extends ObjectBehavior
         $response->privateData()->shouldBeNull();
     }
 
-    function it_should_decode_protected_data(JsonDecoder $jsonDecoder)
+    public function it_should_decode_protected_data(JsonDecoder $jsonDecoder)
     {
         $jsonDecoder->decodesProtectedProperties()->willReturn(true)->shouldBeCalled();
         $jsonDecoder->decodesPrivateProperties()->willReturn(false)->shouldBeCalled();
@@ -63,9 +63,9 @@ class ClassBindingsSpec extends ObjectBehavior
         $instance = new Sample();
 
         $response = $this->decode([
-            'publicField' => 'data',
+            'publicField'    => 'data',
             'protectedField' => 'protected data',
-            'privateField' => 'private data',
+            'privateField'   => 'private data',
         ], $instance);
 
         $response->publicData()->shouldReturn('data');
@@ -73,7 +73,7 @@ class ClassBindingsSpec extends ObjectBehavior
         $response->privateData()->shouldBeNull();
     }
 
-    function it_should_decode_private_data(JsonDecoder $jsonDecoder)
+    public function it_should_decode_private_data(JsonDecoder $jsonDecoder)
     {
         $jsonDecoder->decodesProtectedProperties()->willReturn(false)->shouldBeCalled();
         $jsonDecoder->decodesPrivateProperties()->willReturn(true)->shouldBeCalled();
@@ -81,9 +81,9 @@ class ClassBindingsSpec extends ObjectBehavior
         $instance = new Sample();
 
         $response = $this->decode([
-            'publicField' => 'data',
+            'publicField'    => 'data',
             'protectedField' => 'protected data',
-            'privateField' => 'private data',
+            'privateField'   => 'private data',
         ], $instance);
 
         $response->publicData()->shouldReturn('data');
@@ -91,29 +91,30 @@ class ClassBindingsSpec extends ObjectBehavior
         $response->privateData()->shouldReturn('private data');
     }
 
-    function it_should_call_binding_for_property(JsonDecoder $jsonDecoder, Binding $binding)
+    public function it_should_call_binding_for_property(JsonDecoder $jsonDecoder, Binding $binding)
     {
         $sample = new Sample();
         $accessor = new PropertyAccessor(new \ReflectionProperty($sample, 'publicField'), $sample);
 
         $binding->property()->willReturn('publicField')->shouldBeCalled();
         $binding->bind($jsonDecoder, [
-            'publicField' => 'data',
+            'publicField'    => 'data',
             'protectedField' => 'protected data',
-            'privateField' => 'private data',
+            'privateField'   => 'private data',
         ], $accessor)->shouldBeCalled();
 
         $this->register($binding);
 
         $this->decode([
-            'publicField' => 'data',
+            'publicField'    => 'data',
             'protectedField' => 'protected data',
-            'privateField' => 'private data',
+            'privateField'   => 'private data',
         ], $sample);
     }
 }
 
-class Sample {
+class Sample
+{
     public $publicField;
     protected $protectedField;
     private $privateField;
