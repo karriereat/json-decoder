@@ -79,7 +79,7 @@ $person = $jsonDecoder->decode($jsonData, Person::class);
 ### Handling private and protected properties
 The `JsonDecoder` class accepts two boolean constructor parameters to enable the handling of private and protected properties.
 
-To do so a so called `AccessProxy` will be installed and on property set the proxy will set the property to accessible, set the according value and then will set the property to not accessible again.
+To do so a so called `PropertyAccessor` will be installed and on property set the proxy will set the property to accessible, set the according value and then will set the property to not accessible again.
 
 ## Documentation
 
