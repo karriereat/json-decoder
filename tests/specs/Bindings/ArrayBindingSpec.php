@@ -7,6 +7,7 @@ use Karriere\JsonDecoder\Exceptions\JsonValueException;
 use Karriere\JsonDecoder\JsonDecoder;
 use Karriere\JsonDecoder\PropertyAccessor;
 use PhpSpec\ObjectBehavior;
+use Prophecy\Argument;
 
 class ArrayBindingSpec extends ObjectBehavior
 {
@@ -35,6 +36,13 @@ class ArrayBindingSpec extends ObjectBehavior
         $jsonDecoder->decodeArray([], Sample::class)->shouldBeCalledTimes(2);
 
         $this->bind($jsonDecoder, ['field' => [[], []]], $propertyAccessor);
+    }
+
+    public function it_should_ignore_null_values(JsonDecoder $jsonDecoder, PropertyAccessor $propertyAccessor)
+    {
+        $jsonDecoder->decodeArray(Argument::any(), Argument::any())->shouldNotBeCalled();
+
+        $this->bind($jsonDecoder, ['field' => null], $propertyAccessor);
     }
 }
 

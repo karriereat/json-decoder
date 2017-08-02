@@ -60,11 +60,13 @@ class ArrayBinding implements Binding
         $data = $jsonData[$this->jsonField];
         $values = [];
 
-        foreach ($data as $item) {
-            $values[] = $jsonDecoder->decodeArray($item, $this->type);
-        }
+        if (is_array($data)) {
+            foreach ($data as $item) {
+                $values[] = $jsonDecoder->decodeArray($item, $this->type);
+            }
 
-        $propertyAccessor->set($values);
+            $propertyAccessor->set($values);
+        }
     }
 
     /**
