@@ -7,6 +7,7 @@ use Karriere\JsonDecoder\Exceptions\JsonValueException;
 use Karriere\JsonDecoder\JsonDecoder;
 use Karriere\JsonDecoder\PropertyAccessor;
 use PhpSpec\ObjectBehavior;
+use Prophecy\Argument;
 
 class FieldBindingSpec extends ObjectBehavior
 {
@@ -25,9 +26,18 @@ class FieldBindingSpec extends ObjectBehavior
         $this->property()->shouldReturn('property');
     }
 
-    public function it_should_throw_an_exception_if_the_json_field_does_not_exist(JsonDecoder $jsonDecoder, PropertyAccessor $propertyAccessor)
+    public function it_should_throw_an_exception_if_the_json_field_does_not_exist_and_is_required(JsonDecoder $jsonDecoder, PropertyAccessor $propertyAccessor)
     {
+        $this->beConstructedWith('property', 'field', FieldBindingSample::class, true);
+
         $this->shouldThrow(JsonValueException::class)->duringBind($jsonDecoder, [], $propertyAccessor);
+    }
+
+    public function it_should_not_set_value_if_the_json_field_does_not_exist_and_is_not_required(JsonDecoder $jsonDecoder, PropertyAccessor $propertyAccessor)
+    {
+        $propertyAccessor->set(Argument::any())->shouldNotBeCalled();
+
+        $this->bind($jsonDecoder, [], $propertyAccessor);
     }
 
     public function it_should_bind_the_decoded_value(JsonDecoder $jsonDecoder, PropertyAccessor $propertyAccessor)
