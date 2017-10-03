@@ -81,6 +81,10 @@ class JsonDecoder
 
     protected function transformRaw($jsonArrayData, $instance)
     {
+        if (empty($jsonArrayData)) {
+            return null;
+        }
+
         foreach ($jsonArrayData as $key => $value) {
             if (property_exists($instance, $key)) {
                 $instance->{$key} = $value;
