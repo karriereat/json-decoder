@@ -53,6 +53,7 @@ class AliasBinding implements Binding
     {
         if (array_key_exists($this->jsonField, $jsonData)) {
             $propertyAccessor->set($jsonData[$this->jsonField]);
+
             return;
         }
 
