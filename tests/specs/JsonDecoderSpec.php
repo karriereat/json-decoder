@@ -72,7 +72,6 @@ class JsonDecoderSample
 
 class SampleTransformer implements Transformer
 {
-
     public function register(ClassBindings $classBindings)
     {
         $classBindings->register(new CallbackBinding('name', function ($data) {
