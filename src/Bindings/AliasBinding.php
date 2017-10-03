@@ -20,15 +20,22 @@ class AliasBinding implements Binding
     private $jsonField;
 
     /**
+     * @var bool
+     */
+    private $isRequired;
+
+    /**
      * AliasBinding constructor.
      *
-     * @param string $property  the property to bind to
-     * @param string $jsonField the json field
+     * @param string $property   the property to bind to
+     * @param string $jsonField  the json field
+     * @param bool   $isRequired defines if the field value is required during decoding
      */
-    public function __construct($property, $jsonField)
+    public function __construct($property, $jsonField, $isRequired = false)
     {
         $this->property = $property;
         $this->jsonField = $jsonField;
+        $this->isRequired = $isRequired;
     }
 
     /**
@@ -44,13 +51,17 @@ class AliasBinding implements Binding
      */
     public function bind($jsonDecoder, $jsonData, $propertyAccessor)
     {
-        if (!array_key_exists($this->jsonField, $jsonData)) {
+        if (array_key_exists($this->jsonField, $jsonData)) {
+            $propertyAccessor->set($jsonData[$this->jsonField]);
+
+            return;
+        }
+
+        if ($this->isRequired) {
             throw new JsonValueException(
                 sprintf('the value "%s" for property "%s" does not exist', $this->jsonField, $this->property)
             );
         }
-
-        $propertyAccessor->set($jsonData[$this->jsonField]);
     }
 
     /**
