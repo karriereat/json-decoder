@@ -32,10 +32,10 @@ class ArrayBinding implements Binding
     /**
      * ArrayBinding constructor.
      *
-     * @param string $property the property to bind to
-     * @param string $jsonField the json field
-     * @param string $type the desired type of the property
-     * @param bool $isRequired defines if the field value is required during decoding
+     * @param string $property   the property to bind to
+     * @param string $jsonField  the json field
+     * @param string $type       the desired type of the property
+     * @param bool   $isRequired defines if the field value is required during decoding
      */
     public function __construct($property, $jsonField, $type, $isRequired = false)
     {

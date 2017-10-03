@@ -27,9 +27,9 @@ class AliasBinding implements Binding
     /**
      * AliasBinding constructor.
      *
-     * @param string $property the property to bind to
-     * @param string $jsonField the json field
-     * @param bool $isRequired defines if the field value is required during decoding
+     * @param string $property   the property to bind to
+     * @param string $jsonField  the json field
+     * @param bool   $isRequired defines if the field value is required during decoding
      */
     public function __construct($property, $jsonField, $isRequired = false)
     {
