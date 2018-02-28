@@ -40,6 +40,18 @@ class JsonDecoder
         return $this->decodeArray(json_decode($jsonString, true), $classType);
     }
 
+    public function decodeMultiple($jsonString, $classType)
+    {
+        $data = json_decode($jsonString, true);
+
+        return array_map(
+            function ($element) use ($classType) {
+                return $this->decodeArray($element, $classType);
+            },
+            $data
+        );
+    }
+
     /**
      * decodes the given array data into an instance of the given class type.
      *

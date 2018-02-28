@@ -62,6 +62,35 @@ class JsonDecoderSpec extends ObjectBehavior
 
         $this->decode($jsonString, JsonDecoderSample::class)->shouldReturn(null);
     }
+
+    public function it_should_be_able_to_transform_an_array_of_objects()
+    {
+        $jsonString = json_encode(
+            [
+                [
+                    'id' => 1,
+                    'name' => 'John',
+                ],
+                [
+                    'id' => 2,
+                    'name' => 'Jane',
+                ],
+            ]
+        );
+
+        $response = $this->decodeMultiple($jsonString, JsonDecoderSample::class);
+
+        $response->shouldBeArray();
+        $response->shouldHaveCount(2);
+
+        $response[0]->shouldHaveType(JsonDecoderSample::class);
+        $response[0]->id->shouldBe(1);
+        $response[0]->name->shouldBe('John');
+
+        $response[1]->shouldHaveType(JsonDecoderSample::class);
+        $response[1]->id->shouldBe(2);
+        $response[1]->name->shouldBe('Jane');
+    }
 }
 
 class JsonDecoderSample
