@@ -53,12 +53,12 @@ The transformer interface defines two methods:
 * transforms: gives you the full qualified class name e.g.: Your\Namespace\Class
 ```php
 class PersonTransformer implements Transformer {
-    
+
     public function register(ClassBindings $classBindings)
     {
         $classBindings->register(new FieldBinding('address', 'address', Address::class);
     }
-    
+
     public function transforms()
     {
         return Person::class;
@@ -80,6 +80,17 @@ $person = $jsonDecoder->decode($jsonData, Person::class);
 The `JsonDecoder` class accepts two boolean constructor parameters to enable the handling of private and protected properties.
 
 To do so a so called `PropertyAccessor` will be installed and on property set the proxy will set the property to accessible, set the according value and then will set the property to not accessible again.
+
+### Transforming an array of elements
+If your json contains an array of elements at the root level you can use the `decodeMultiple` method to transform the json data into an array of class type objects.
+
+```php
+$jsonDecoder = new JsonDecoder();
+
+$jsonData = '[{"id": 1, "name": "John Doe"}, {"id": 2, "name": "Jane Doe"}]';
+
+$personArray = $jsonDecoder->decodeMultiple($jsonData, Person::class);
+```
 
 ## Documentation
 
