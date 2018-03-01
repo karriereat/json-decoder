@@ -6,7 +6,7 @@
 
 # JsonDecoder for PHP
 
-This package contains a JsonDecoder implementation that allows you to convert your json data into php class objects other than `stdclass`.
+This package contains a JsonDecoder implementation that allows you to convert your JSON data into php class objects other than `stdclass`.
 
 ## Installation
 You can install the package via composer
@@ -15,18 +15,19 @@ composer require karriere/json-decoder
 ```
 
 ## Usage
-By default all public properties of the class will be inspected. For all properties that have a json key with the same name the according value will be set.
+By default all public properties of the class will be inspected. For all properties that have a JSON key with the same name the according value will be set.
 
 ### A simple example
 Assume you have a class `Person` that looks like this:
 ```php
-class Person {
+class Person
+{
     public $id;
     public $name;
 }
 ```
 
-The following code will transform the given json data into an instance of `Person`.
+The following code will transform the given JSON data into an instance of `Person`.
 
 ```php
 $jsonDecoder = new JsonDecoder();
@@ -38,7 +39,8 @@ $person = $jsonDecoder->decode($jsonData, Person::class);
 ### Defining a Transformer
 Let's extend the previous example with a property called address. This address field should contain an instance of `Address`.
 ```php
-class Person {
+class Person
+{
     public $id;
     public $name;
     public $address;
@@ -52,8 +54,8 @@ The transformer interface defines two methods:
 * register: here you register your field, array, alias and callback bindings
 * transforms: gives you the full qualified class name e.g.: Your\Namespace\Class
 ```php
-class PersonTransformer implements Transformer {
-
+class PersonTransformer implements Transformer
+{
     public function register(ClassBindings $classBindings)
     {
         $classBindings->register(new FieldBinding('address', 'address', Address::class);
@@ -82,7 +84,7 @@ The `JsonDecoder` class accepts two boolean constructor parameters to enable the
 To do so a so called `PropertyAccessor` will be installed and on property set the proxy will set the property to accessible, set the according value and then will set the property to not accessible again.
 
 ### Transforming an array of elements
-If your json contains an array of elements at the root level you can use the `decodeMultiple` method to transform the json data into an array of class type objects.
+If your JSON contains an array of elements at the root level you can use the `decodeMultiple` method to transform the JSON data into an array of class type objects.
 
 ```php
 $jsonDecoder = new JsonDecoder();
@@ -103,7 +105,7 @@ The following `Binding` implementations are available
 * [CallbackBinding](#callbackbinding)
 
 #### FieldBinding
-Defines a json field to property binding for the given type.
+Defines a JSON field to property binding for the given type.
 
 **Signature:**
 ```php
@@ -121,7 +123,7 @@ new ArrayBinding($property, $jsonField, $type);
 This defines a field mapping for the property `$property` to an array of class instance of type `$type` with data in `$jsonField`.
 
 #### AliasBinding
-Defines a json field to property binding.
+Defines a JSON field to property binding.
 
 **Signature:**
 ```php
