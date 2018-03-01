@@ -35,9 +35,21 @@ class JsonDecoder
         $this->transformers[$transformer->transforms()] = $transformer;
     }
 
-    public function decode($jsonString, $classType)
+    public function decode(string $json, string $classType)
     {
-        return $this->decodeArray(json_decode($jsonString, true), $classType);
+        return $this->decodeArray(json_decode($json, true), $classType);
+    }
+
+    public function decodeMultiple(string $json, string $classType)
+    {
+        $data = json_decode($json, true);
+
+        return array_map(
+            function ($element) use ($classType) {
+                return $this->decodeArray($element, $classType);
+            },
+            $data
+        );
     }
 
     /**
