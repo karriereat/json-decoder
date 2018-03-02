@@ -91,12 +91,40 @@ class JsonDecoderSpec extends ObjectBehavior
         $response[1]->id->shouldBe(2);
         $response[1]->name->shouldBe('Jane');
     }
+
+    public function it_should_be_able_to_transform_raw_with_private_properties()
+    {
+        $this->beConstructedWith(true, false);
+        $jsonString = '{"id": 1, "name": "John Doe"}';
+
+        $response = $this->decode($jsonString, SampleWithPrivateProperties::class);
+
+        $response->shouldHaveType(SampleWithPrivateProperties::class);
+        $response->getId()->shouldBe(1);
+        $response->getName()->shouldReturn('John Doe');
+    }
 }
 
 class JsonDecoderSample
 {
     public $id;
     public $name;
+}
+
+class SampleWithPrivateProperties
+{
+    private $id;
+    private $name;
+
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function getName()
+    {
+        return $this->name;
+    }
 }
 
 class SampleTransformer implements Transformer
