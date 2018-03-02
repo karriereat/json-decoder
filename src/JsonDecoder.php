@@ -2,6 +2,9 @@
 
 namespace Karriere\JsonDecoder;
 
+use Karriere\JsonDecoder\Bindings\RawBinding;
+
+
 class JsonDecoder
 {
     /**
@@ -97,12 +100,12 @@ class JsonDecoder
             return null;
         }
 
-        foreach ($jsonArrayData as $key => $value) {
-            if (property_exists($instance, $key)) {
-                $instance->{$key} = $value;
-            }
+        $classBindings = new ClassBindings($this);
+
+        foreach(array_keys($jsonArrayData) as $property) {
+            $classBindings->register(new RawBinding($property));
         }
 
-        return $instance;
+        return $classBindings->decode($jsonArrayData, $instance);
     }
 }
