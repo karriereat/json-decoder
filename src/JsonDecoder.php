@@ -4,7 +4,6 @@ namespace Karriere\JsonDecoder;
 
 use Karriere\JsonDecoder\Bindings\RawBinding;
 
-
 class JsonDecoder
 {
     /**
