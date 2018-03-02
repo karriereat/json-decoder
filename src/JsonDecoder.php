@@ -102,7 +102,7 @@ class JsonDecoder
 
         $classBindings = new ClassBindings($this);
 
-        foreach(array_keys($jsonArrayData) as $property) {
+        foreach (array_keys($jsonArrayData) as $property) {
             $classBindings->register(new RawBinding($property));
         }
 
