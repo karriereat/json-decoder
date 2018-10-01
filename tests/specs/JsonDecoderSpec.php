@@ -107,7 +107,7 @@ class JsonDecoderSpec extends ObjectBehavior
     public function it_should_be_able_to_transform_null_values()
     {
         $this->register(new SampleTransformer());
-        $response = $this->decode("null", JsonDecoderSample::class);
+        $response = $this->decode('null', JsonDecoderSample::class);
 
         $response->shouldBe(null);
     }
