@@ -87,6 +87,10 @@ class JsonDecoder
 
     private function transform($transformer, $jsonArrayData, $instance)
     {
+        if (empty($jsonArrayData)) {
+            return null;
+        }
+
         $classBindings = new ClassBindings($this);
         $transformer->register($classBindings);
 

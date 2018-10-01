@@ -103,6 +103,14 @@ class JsonDecoderSpec extends ObjectBehavior
         $response->getId()->shouldBe(1);
         $response->getName()->shouldReturn('John Doe');
     }
+
+    public function it_should_be_able_to_transform_null_values()
+    {
+        $this->register(new SampleTransformer());
+        $response = $this->decode('null', JsonDecoderSample::class);
+
+        $response->shouldBe(null);
+    }
 }
 
 class JsonDecoderSample
