@@ -41,7 +41,7 @@ class CallbackBinding implements Binding
      */
     public function bind($jsonDecoder, $jsonData, $propertyAccessor)
     {
-        $propertyAccessor->set($this->callback->__invoke($jsonData));
+        $propertyAccessor->set($this->callback->__invoke($jsonData, $jsonDecoder));
     }
 
     /**
