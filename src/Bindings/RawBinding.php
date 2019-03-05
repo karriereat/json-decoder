@@ -4,13 +4,8 @@ namespace Karriere\JsonDecoder\Bindings;
 
 use Karriere\JsonDecoder\Binding;
 
-class RawBinding implements Binding
+class RawBinding extends Binding
 {
-    /**
-     * @var string
-     */
-    private $property;
-
     /**
      * RawBinding constructor.
      *
@@ -18,7 +13,7 @@ class RawBinding implements Binding
      */
     public function __construct($property)
     {
-        $this->property = $property;
+        parent::__construct($property, null, null, false);
     }
 
     /**
@@ -37,13 +32,5 @@ class RawBinding implements Binding
         if (array_key_exists($this->property, $jsonData)) {
             $propertyAccessor->set($jsonData[$this->property]);
         }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function property()
-    {
-        return $this->property;
     }
 }

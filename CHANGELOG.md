@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - `validate` function for checking the `isRequired` flag for Bindings
 
+### Changed
+- transform `Binding` to an abstract class and unify functionality from `AliasBinding`, `ArrayBinding` & `FieldBinding`
+
 ### Fixed
 - check for `isRequired` flag is only executed when applicable
 

@@ -4,23 +4,8 @@ namespace Karriere\JsonDecoder\Bindings;
 
 use Karriere\JsonDecoder\Binding;
 
-class AliasBinding implements Binding
+class AliasBinding extends Binding
 {
-    /**
-     * @var string
-     */
-    private $property;
-
-    /**
-     * @var string
-     */
-    private $jsonField;
-
-    /**
-     * @var bool
-     */
-    private $isRequired;
-
     /**
      * AliasBinding constructor.
      *
@@ -30,17 +15,7 @@ class AliasBinding implements Binding
      */
     public function __construct($property, $jsonField, $isRequired = false)
     {
-        $this->property = $property;
-        $this->jsonField = $jsonField;
-        $this->isRequired = $isRequired;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function validate($jsonData) : bool
-    {
-        return !$this->isRequired || array_key_exists($this->jsonField, $jsonData);
+        parent::__construct($property, $jsonField, null, $isRequired);
     }
 
     /**
@@ -51,13 +26,5 @@ class AliasBinding implements Binding
         if (array_key_exists($this->jsonField, $jsonData)) {
             $propertyAccessor->set($jsonData[$this->jsonField]);
         }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function property()
-    {
-        return $this->property;
     }
 }
