@@ -5,6 +5,7 @@ namespace tests\specs\Karriere\JsonDecoder;
 use Karriere\JsonDecoder\Binding;
 use Karriere\JsonDecoder\ClassBindings;
 use Karriere\JsonDecoder\Exceptions\InvalidBindingException;
+use Karriere\JsonDecoder\Exceptions\JsonValueException;
 use Karriere\JsonDecoder\JsonDecoder;
 use Karriere\JsonDecoder\PropertyAccessor;
 use PhpSpec\ObjectBehavior;
@@ -96,12 +97,15 @@ class ClassBindingsSpec extends ObjectBehavior
         $sample = new Sample();
         $accessor = new PropertyAccessor(new \ReflectionProperty($sample, 'publicField'), $sample);
 
-        $binding->property()->willReturn('publicField')->shouldBeCalled();
-        $binding->bind($jsonDecoder, [
+        $data = [
             'publicField'    => 'data',
             'protectedField' => 'protected data',
             'privateField'   => 'private data',
-        ], $accessor)->shouldBeCalled();
+        ];
+
+        $binding->property()->willReturn('publicField')->shouldBeCalled();
+        $binding->validate($data)->willReturn(true)->shouldBeCalled();
+        $binding->bind($jsonDecoder, $data, $accessor)->shouldBeCalled();
 
         $this->register($binding);
 
@@ -110,6 +114,18 @@ class ClassBindingsSpec extends ObjectBehavior
             'protectedField' => 'protected data',
             'privateField'   => 'private data',
         ], $sample);
+    }
+
+    public function it_should_throw_a_value_exception_for_missing_required_property_data(JsonDecoder $jsonDecoder, Binding $binding)
+    {
+        $sample = new Sample();
+
+        $binding->property()->willReturn('publicField')->shouldBeCalled();
+        $binding->validate([])->willReturn(false)->shouldBeCalled();
+
+        $this->register($binding);
+
+        $this->shouldThrow(JsonValueException::class)->duringDecode([], $sample);
     }
 }
 

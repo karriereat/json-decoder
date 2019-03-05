@@ -26,6 +26,11 @@ class CallbackBindingSpec extends ObjectBehavior
         $this->property()->shouldReturn('property');
     }
 
+    public function it_should_succeed_on_binding_validation()
+    {
+        $this->validate(['field' => 'value'])->shouldReturn(true);
+    }
+
     public function it_should_execute_the_callback_and_store_the_result(JsonDecoder $jsonDecoder, PropertyAccessor $propertyAccessor)
     {
         $propertyAccessor->set('some callback data')->shouldBeCalled();
