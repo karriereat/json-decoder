@@ -69,5 +69,5 @@ abstract class Binding
      *
      * @return mixed
      */
-    public abstract function bind($jsonDecoder, $jsonData, $propertyAccessor);
+    abstract public function bind($jsonDecoder, $jsonData, $propertyAccessor);
 }
