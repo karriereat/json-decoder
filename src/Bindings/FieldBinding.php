@@ -3,9 +3,7 @@
 namespace Karriere\JsonDecoder\Bindings;
 
 use Karriere\JsonDecoder\Binding;
-use Karriere\JsonDecoder\Exceptions\JsonValueException;
 use Karriere\JsonDecoder\JsonDecoder;
-use Karriere\JsonDecoder\PropertyAccessor;
 
 class FieldBinding implements Binding
 {
@@ -46,15 +44,15 @@ class FieldBinding implements Binding
     }
 
     /**
-     * executes the defined binding method on the class instance.
-     *
-     * @param JsonDecoder      $jsonDecoder
-     * @param array            $jsonData
-     * @param PropertyAccessor $propertyAccessor the class instance to bind to
-     *
-     * @throws JsonValueException if given json field is not available
-     *
-     * @return mixed
+     * {@inheritdoc}
+     */
+    public function validate($jsonData) : bool
+    {
+        return !$this->isRequired || array_key_exists($this->jsonField, $jsonData);
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function bind($jsonDecoder, $jsonData, $propertyAccessor)
     {
@@ -62,16 +60,10 @@ class FieldBinding implements Binding
             $data = $jsonData[$this->jsonField];
             $propertyAccessor->set($jsonDecoder->decodeArray($data, $this->type));
         }
-
-        if ($this->isRequired) {
-            throw new JsonValueException(
-                sprintf('the value "%s" for property "%s" does not exist', $this->jsonField, $this->property)
-            );
-        }
     }
 
     /**
-     * @return string the name of the property to bind
+     * {@inheritdoc}
      */
     public function property()
     {

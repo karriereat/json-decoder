@@ -4,6 +4,7 @@ namespace Karriere\JsonDecoder;
 
 use Karriere\JsonDecoder\Bindings\RawBinding;
 use Karriere\JsonDecoder\Exceptions\InvalidBindingException;
+use Karriere\JsonDecoder\Exceptions\JsonValueException;
 
 class ClassBindings
 {
@@ -60,6 +61,13 @@ class ClassBindings
             if ($this->hasBinding($propertyName)) {
                 /** @var Binding $binding */
                 $binding = $this->bindings[$propertyName];
+
+                if (!$binding->validate($data)) {
+                    throw new JsonValueException(
+                        sprintf('Unable to bind required property "%s" because JSON data is missing', $propertyName)
+                    );
+                }
+
                 $binding->bind($this->jsonDecoder, $data, $propertyAccessor);
             } else {
                 $this->handleRaw($propertyName, $data, $propertyAccessor);

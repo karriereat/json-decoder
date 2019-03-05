@@ -25,6 +25,11 @@ class RawBindingSpec extends ObjectBehavior
         $this->property()->shouldReturn('property');
     }
 
+    public function it_should_succeed_on_binding_validation()
+    {
+        $this->validate(['field' => 'value'])->shouldReturn(true);
+    }
+
     public function it_should_not_do_anything_if_json_field_does_not_exist(JsonDecoder $jsonDecoder, PropertyAccessor $propertyAccessor)
     {
         $propertyAccessor->set(Argument::any())->shouldNotBeCalled();

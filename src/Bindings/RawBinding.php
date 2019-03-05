@@ -23,13 +23,15 @@ class RawBinding implements Binding
     }
 
     /**
-     * executes the defined binding method on the class instance.
-     *
-     * @param JsonDecoder $jsonDecoder
-     * @param mixed       $jsonData
-     * @param mixed       $propertyAccessor the class instance to bind to
-     *
-     * @return mixed
+     * {@inheritdoc}
+     */
+    public function validate($jsonData) : bool
+    {
+        return true;
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function bind($jsonDecoder, $jsonData, $propertyAccessor)
     {
@@ -39,7 +41,7 @@ class RawBinding implements Binding
     }
 
     /**
-     * @return string the name of the property to bind
+     * {@inheritdoc}
      */
     public function property()
     {
