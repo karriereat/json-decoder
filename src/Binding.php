@@ -5,7 +5,7 @@ namespace Karriere\JsonDecoder;
 interface Binding
 {
     /**
-     * validate the given binding data
+     * validates the given binding data.
      *
      * @param mixed $jsonData
      *

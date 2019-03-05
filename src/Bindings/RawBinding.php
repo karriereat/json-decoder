@@ -3,7 +3,6 @@
 namespace Karriere\JsonDecoder\Bindings;
 
 use Karriere\JsonDecoder\Binding;
-use Karriere\JsonDecoder\JsonDecoder;
 
 class RawBinding implements Binding
 {

@@ -5,10 +5,10 @@ namespace tests\specs\Karriere\JsonDecoder;
 use Karriere\JsonDecoder\Binding;
 use Karriere\JsonDecoder\ClassBindings;
 use Karriere\JsonDecoder\Exceptions\InvalidBindingException;
+use Karriere\JsonDecoder\Exceptions\JsonValueException;
 use Karriere\JsonDecoder\JsonDecoder;
 use Karriere\JsonDecoder\PropertyAccessor;
 use PhpSpec\ObjectBehavior;
-use Karriere\JsonDecoder\Exceptions\JsonValueException;
 
 class ClassBindingsSpec extends ObjectBehavior
 {
