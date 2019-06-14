@@ -58,7 +58,7 @@ class PersonTransformer implements Transformer
 {
     public function register(ClassBindings $classBindings)
     {
-        $classBindings->register(new FieldBinding('address', 'address', Address::class);
+        $classBindings->register(new FieldBinding('address', 'address', Address::class));
     }
 
     public function transforms()
