@@ -16,13 +16,13 @@
         }
     },
     "require": {
-        "php": ">=7.0"
+        "php": ">=7.2"
     },
     "require-dev": {
         "karriere/code-quality": "^5.0",
-        "sebastian/comparator": "^1.1",
-        "sebastian/exporter": "^2.0",
-        "sebastian/recursion-context": "^2.0"
+        "sebastian/comparator": "^3.0",
+        "sebastian/exporter": "^3.0",
+        "sebastian/recursion-context": "^3.0"
     },
     "scripts": {
         "test": "vendor/bin/phpspec run",
