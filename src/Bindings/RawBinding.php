@@ -19,7 +19,7 @@ class RawBinding extends Binding
     /**
      * {@inheritdoc}
      */
-    public function validate($jsonData) : bool
+    public function validate($jsonData): bool
     {
         return true;
     }

@@ -19,13 +19,13 @@
         "php": ">=7.0"
     },
     "require-dev": {
-        "karriere/code-quality": "^3.0",
+        "karriere/code-quality": "^5.0",
         "sebastian/comparator": "^1.1",
         "sebastian/exporter": "^2.0",
         "sebastian/recursion-context": "^2.0"
     },
     "scripts": {
         "test": "vendor/bin/phpspec run",
-        "lint": "vendor/bin/phpcs src/ --standard=PSR2"
+        "lint": "vendor/bin/phpcs src/ --standard=PSR12"
     }
 }

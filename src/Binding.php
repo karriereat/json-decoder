@@ -47,7 +47,7 @@ abstract class Binding
      *
      * @return bool
      */
-    public function validate($jsonData) : bool
+    public function validate($jsonData): bool
     {
         return !$this->isRequired || array_key_exists($this->jsonField, $jsonData);
     }

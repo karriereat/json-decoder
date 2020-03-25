@@ -26,7 +26,7 @@ class CallbackBinding extends Binding
     /**
      * {@inheritdoc}
      */
-    public function validate($jsonData) : bool
+    public function validate($jsonData): bool
     {
         return true;
     }
