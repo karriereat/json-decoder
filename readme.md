@@ -103,6 +103,7 @@ The following `Binding` implementations are available
 * [FieldBinding](#fieldbinding)
 * [ArrayBinding](#arraybinding)
 * [AliasBinding](#aliasbinding)
+* [DateTimeBinding](#datetimebinding)
 * [CallbackBinding](#callbackbinding)
 
 #### FieldBinding
@@ -129,6 +130,14 @@ Defines a JSON field to property binding.
 **Signature:**
 ```php
 new AliasBinding($property, $jsonField);
+```
+
+#### DateTimeBinding
+Defines a JSON field to property binding and converts the given string to a `DateTime` instance.
+
+**Signature:**
+```php
+new new DateTimeBinding($property, $jsonField, $isRequired = false, $dateTimeFormat = DateTime::ATOM);
 ```
 
 #### CallbackBinding
