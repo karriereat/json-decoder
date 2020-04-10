@@ -64,7 +64,10 @@ class ClassBindings
 
                 if (!$binding->validate($data)) {
                     throw new JsonValueException(
-                        sprintf('Unable to bind required property "%s" because JSON data is missing or invalid', $propertyName)
+                        sprintf(
+                            'Unable to bind required property "%s" because JSON data is missing or invalid',
+                            $propertyName
+                        )
                     );
                 }
 
