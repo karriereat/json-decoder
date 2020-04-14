@@ -30,6 +30,7 @@
     },
     "scripts": {
         "test": "vendor/bin/phpunit",
+        "coverage": "vendor/bin/phpunit --coverage-clover coverage.xml",
         "lint": "vendor/bin/phpcs src/ --standard=PSR12"
     }
 }
