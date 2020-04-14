@@ -1,9 +1,0 @@
-suites:
-    main:
-        namespace: Karriere\JsonDecoder
-        psr4_prefix: Karriere\JsonDecoder
-        src_path: src
-        spec_prefix: tests\specs
-
-
-formatter.name: pretty

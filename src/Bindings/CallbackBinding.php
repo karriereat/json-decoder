@@ -3,6 +3,8 @@
 namespace Karriere\JsonDecoder\Bindings;
 
 use Karriere\JsonDecoder\Binding;
+use Karriere\JsonDecoder\JsonDecoder;
+use Karriere\JsonDecoder\Property;
 
 class CallbackBinding extends Binding
 {
@@ -17,7 +19,7 @@ class CallbackBinding extends Binding
      * @param string   $property
      * @param callable $callback
      */
-    public function __construct($property, $callback)
+    public function __construct(string $property, callable $callback)
     {
         parent::__construct($property, null, null, false);
         $this->callback = $callback;
@@ -26,7 +28,7 @@ class CallbackBinding extends Binding
     /**
      * {@inheritdoc}
      */
-    public function validate($jsonData): bool
+    public function validate(array $jsonData): bool
     {
         return true;
     }
@@ -34,8 +36,8 @@ class CallbackBinding extends Binding
     /**
      * {@inheritdoc}
      */
-    public function bind($jsonDecoder, $jsonData, $propertyAccessor)
+    public function bind(JsonDecoder $jsonDecoder, ?array $jsonData, Property $property)
     {
-        $propertyAccessor->set($this->callback->__invoke($jsonData, $jsonDecoder));
+        $property->set($this->callback->__invoke($jsonData, $jsonDecoder));
     }
 }

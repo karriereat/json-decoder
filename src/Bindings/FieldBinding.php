@@ -3,17 +3,19 @@
 namespace Karriere\JsonDecoder\Bindings;
 
 use Karriere\JsonDecoder\Binding;
+use Karriere\JsonDecoder\JsonDecoder;
+use Karriere\JsonDecoder\Property;
 
 class FieldBinding extends Binding
 {
     /**
      * {@inheritdoc}
      */
-    public function bind($jsonDecoder, $jsonData, $propertyAccessor)
+    public function bind(JsonDecoder $jsonDecoder, ?array $jsonData, Property $property)
     {
         if (array_key_exists($this->jsonField, $jsonData)) {
             $data = $jsonData[$this->jsonField];
-            $propertyAccessor->set($jsonDecoder->decodeArray($data, $this->type));
+            $property->set($jsonDecoder->decodeArray($data, $this->type));
         }
     }
 }

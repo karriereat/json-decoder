@@ -5,6 +5,7 @@ namespace Karriere\JsonDecoder;
 use Karriere\JsonDecoder\Bindings\RawBinding;
 use Karriere\JsonDecoder\Exceptions\InvalidBindingException;
 use Karriere\JsonDecoder\Exceptions\JsonValueException;
+use Karriere\JsonDecoder\Property;
 
 class ClassBindings
 {
@@ -24,7 +25,7 @@ class ClassBindings
     }
 
     /**
-     * decodes all available properties of the given class instance.
+     * decodes all available json fields into the given class instance.
      *
      * @param array $data
      * @param mixed $instance
@@ -33,47 +34,14 @@ class ClassBindings
      */
     public function decode($data, $instance)
     {
-        $reflectionClass = new \ReflectionClass($instance);
-        $properties = $reflectionClass->getProperties();
-
-        foreach ($properties as $property) {
-            $needsProxy = false;
-
-            if ($property->isPrivate()) {
-                if ($this->jsonDecoder->decodesPrivateProperties()) {
-                    $needsProxy = true;
-                } else {
-                    continue;
-                }
+        foreach (array_keys($data) as $fieldName) {
+            if ($this->hasBinding($fieldName)) {
+                $binding = $this->bindings[$fieldName];
+                $property = Property::create($instance, $this->bindings[$fieldName]->property());
+                $this->handleBinding($binding, $property, $data);
             } else {
-                if ($property->isProtected()) {
-                    if ($this->jsonDecoder->decodesProtectedProperties()) {
-                        $needsProxy = true;
-                    } else {
-                        continue;
-                    }
-                }
-            }
-
-            $propertyAccessor = new PropertyAccessor($property, $instance, $needsProxy);
-
-            $propertyName = $property->getName();
-            if ($this->hasBinding($propertyName)) {
-                /** @var Binding $binding */
-                $binding = $this->bindings[$propertyName];
-
-                if (!$binding->validate($data)) {
-                    throw new JsonValueException(
-                        sprintf(
-                            'Unable to bind required property "%s" because JSON data is missing or invalid',
-                            $propertyName
-                        )
-                    );
-                }
-
-                $binding->bind($this->jsonDecoder, $data, $propertyAccessor);
-            } else {
-                $this->handleRaw($propertyName, $data, $propertyAccessor);
+                $property = Property::create($instance, $fieldName);
+                $this->handleRaw($property, $data);
             }
         }
 
@@ -88,10 +56,10 @@ class ClassBindings
     public function register($binding)
     {
         if (!$binding instanceof Binding) {
-            throw new InvalidBindingException('the given binding must implement the Binding interface');
+            throw new InvalidBindingException();
         }
 
-        $this->bindings[$binding->property()] = $binding;
+        $this->bindings[$binding->jsonField()] = $binding;
     }
 
     /**
@@ -101,13 +69,22 @@ class ClassBindings
      *
      * @return bool
      */
-    private function hasBinding($property)
+    public function hasBinding($property)
     {
         return array_key_exists($property, $this->bindings);
     }
 
-    private function handleRaw($property, $data, $propertyAccessor)
+    private function handleBinding(Binding $binding, Property $property, $data)
     {
-        (new RawBinding($property))->bind($this->jsonDecoder, $data, $propertyAccessor);
+        if (!$binding->validate($data)) {
+            throw new JsonValueException($property->getName());
+        }
+
+        $binding->bind($this->jsonDecoder, $data, $property);
+    }
+
+    private function handleRaw(Property $property, $data)
+    {
+        (new RawBinding($property->getName()))->bind($this->jsonDecoder, $data, $property);
     }
 }

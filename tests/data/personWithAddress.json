@@ -1,0 +1,9 @@
+{
+  "firstname": "John",
+  "lastname": "Doe",
+  "address": {
+    "street": "Street",
+    "city": "City"
+  },
+  "birthday": "2020-01-01T12:00:00+00:00"
+}
