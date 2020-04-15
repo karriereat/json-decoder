@@ -206,7 +206,10 @@ class JsonDecoder
      * scans the given class and creates bindings for annotated properties
      *
      * @param string $class the class to scan
+     *
      * @return array        the list of generated bindings
+     *
+     * @throws ReflectionException
      */
     private function scan(string $class)
     {

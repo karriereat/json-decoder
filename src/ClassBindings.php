@@ -119,6 +119,14 @@ class ClassBindings
         (new RawBinding($property->getName()))->bind($this->jsonDecoder, $data, $property);
     }
 
+    /**
+     * creates the property variants and checks if one of them is an actual property of the instance
+     *
+     * @param string $jsonField the json field name used for creating the variants
+     * @param mixed $instance   the class instance
+     *
+     * @return null|Property
+     */
     private function autoCase(string $jsonField, $instance): ?Property
     {
         $variants = array_filter(
@@ -142,6 +150,13 @@ class ClassBindings
         return null;
     }
 
+    /**
+     * converts the given snake case input to camel case
+     *
+     * @param string $input snake case input
+     *
+     * @return string
+     */
     private function snakeToCamelCase(string $input)
     {
         $fn = function ($c) {
@@ -151,6 +166,13 @@ class ClassBindings
         return preg_replace_callback('/_([a-z])/', $fn, strtolower($input));
     }
 
+    /**
+     * converts the given kebap case input to camel case
+     *
+     * @param string $input kebap case input
+     *
+     * @return string
+     */
     private function kebapToCamelCase(string $input)
     {
         $output = str_replace('-', '', ucwords($input, '-'));

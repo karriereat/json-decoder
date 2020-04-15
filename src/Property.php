@@ -49,6 +49,13 @@ class Property
         $this->property = $property;
     }
 
+    /**
+     * sets the value to the property
+     *
+     * @param mixed $value
+     *
+     * @return void
+     */
     public function set($value)
     {
         if (is_null($this->property)) {
@@ -60,6 +67,11 @@ class Property
         }
     }
 
+    /**
+     * gets the name ot the property
+     *
+     * @return string
+     */
     public function getName()
     {
         return $this->propertyName;
