@@ -43,9 +43,37 @@ $jsonData = '{"id": 1, "name": "John Doe"}';
 $person = $jsonDecoder->decode($jsonData, Person::class);
 ```
 
+### More complex use case
+
+Let's extend the previous example with a property called address. This address field should contain an instance of `Address`. In the prior versions of `json-decoder` it was necessary to define a custom `Transformer` to be able to handle this situation. As of version 4 you can use the introduced method `scanAndRegister` to automatically generate the transformer based on class annotations.
+
+```php
+class Person
+{
+    public $id;
+    public $name;
+
+    /**
+     * @var Address
+     */
+    public $address;
+}
+```
+
+For this class definition we can decode JSON data as follows:
+
+```php
+$jsonDecoder = new JsonDecoder();
+$jsonDecoder->scanAndRegister(Person::class);
+
+$jsonData = '{"id": 1, "name": "John Doe", "address": {"street": "Samplestreet", "city": "Samplecity"}}';
+
+$person = $jsonDecoder->decode($jsonData, Person::class);
+```
+
 ### Defining a Transformer
 
-Let's extend the previous example with a property called address. This address field should contain an instance of `Address`.
+If you don't use annotations or need a more flexible `Transformer` you can also create a custom transformer. Let's look at the previous example without annotation.
 
 ```php
 class Person
