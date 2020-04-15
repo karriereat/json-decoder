@@ -113,7 +113,18 @@ class JsonDecoder
         return $instance;
     }
 
-    protected function transform($transformer, $jsonArrayData, $instance)
+    /**
+     * transforms the given json data by using the found transformer
+     *
+     * @param Transformer $transformer  the transformer to use
+     * @param array $jsonArrayData      the actual json data
+     * @param mixed $instance           the class instance to bind to
+     *
+     * @return null|mixed
+     *
+     * @throws JsonValueException if the json data is not valid
+     */
+    protected function transform(Transformer $transformer, array $jsonArrayData, $instance)
     {
         if (empty($jsonArrayData)) {
             return null;
@@ -125,6 +136,16 @@ class JsonDecoder
         return $classBindings->decode($jsonArrayData, $instance);
     }
 
+    /**
+     * transforms the given data with raw bindings
+     *
+     * @param mixed $jsonArrayData  the actual json data
+     * @param mixed $instance       the class instance to bind to
+     *
+     * @return null|mixed
+     *
+     * @throws JsonValueException if the json data is not valid
+     */
     protected function transformRaw($jsonArrayData, $instance)
     {
         if (empty($jsonArrayData)) {
@@ -145,8 +166,10 @@ class JsonDecoder
      *
      * @param string $json      the json string to parse
      * @param string|null $root the optional root key
+     *
      * @return mixed            the json data in array format
      *
+     * @throws InvalidJsonException     if the json data cannot be parsed
      * @throws NotExistingRootException if the defined root key does not exist
      */
     private function parseJson(string $json, string $root = null)

@@ -22,6 +22,14 @@ class Property
      */
     private $property;
 
+    /**
+     * creates the property instance
+     *
+     * @param mixed $instance       the class instance the property lives in
+     * @param string $propertyName  the name of the property
+     *
+     * @return static
+     */
     public static function create($instance, string $propertyName)
     {
         $property = null;

@@ -32,7 +32,7 @@ class ClassBindings
      *
      * @return mixed
      */
-    public function decode($data, $instance)
+    public function decode(array $data, $instance)
     {
         foreach (array_keys($data) as $fieldName) {
             if ($this->hasBinding($fieldName)) {
@@ -74,6 +74,17 @@ class ClassBindings
         return array_key_exists($property, $this->bindings);
     }
 
+    /**
+     * validates and executes the found binding on the given property
+     *
+     * @param Binding $binding      the binding to execute
+     * @param Property $property    the property the binding is executed on
+     * @param mixed $data           the actual json array data
+     *
+     * @return void
+     *
+     * @throws JsonValueException   if the binding validation fails
+     */
     private function handleBinding(Binding $binding, Property $property, $data)
     {
         if (!$binding->validate($data)) {
@@ -83,6 +94,13 @@ class ClassBindings
         $binding->bind($this->jsonDecoder, $data, $property);
     }
 
+    /**
+     * builds a raw binding and executes it on the given property
+     * @param Property $property the property to execute the binding on
+     * @param mixed $data        the actual json array data
+     *
+     * @return void
+     */
     private function handleRaw(Property $property, $data)
     {
         (new RawBinding($property->getName()))->bind($this->jsonDecoder, $data, $property);
