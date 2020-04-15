@@ -10,6 +10,11 @@ class Sample
 
     private $privateProperty;
 
+    public function publicProperty()
+    {
+        return $this->publicProperty;
+    }
+
     public function protectedProperty()
     {
         return $this->protectedProperty;

@@ -20,6 +20,16 @@ class JsonDecoder
     private $transformers = [];
 
     /**
+     * @var bool
+     */
+    private $shouldAutoCase = false;
+
+    public function __construct(bool $shouldAutoCase = false)
+    {
+        $this->shouldAutoCase = $shouldAutoCase;
+    }
+
+    /**
      * registers the given transformer.
      *
      * @param Transformer $transformer
@@ -113,6 +123,11 @@ class JsonDecoder
         return $instance;
     }
 
+    public function shouldAutoCase(): bool
+    {
+        return $this->shouldAutoCase;
+    }
+
     /**
      * transforms the given json data by using the found transformer
      *
@@ -153,10 +168,6 @@ class JsonDecoder
         }
 
         $classBindings = new ClassBindings($this);
-
-        foreach (array_keys($jsonArrayData) as $property) {
-            $classBindings->register(new RawBinding($property));
-        }
 
         return $classBindings->decode($jsonArrayData, $instance);
     }

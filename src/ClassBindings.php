@@ -2,10 +2,13 @@
 
 namespace Karriere\JsonDecoder;
 
+use Exception;
+use Karriere\JsonDecoder\Bindings\AliasBinding;
 use Karriere\JsonDecoder\Bindings\RawBinding;
 use Karriere\JsonDecoder\Exceptions\InvalidBindingException;
 use Karriere\JsonDecoder\Exceptions\JsonValueException;
 use Karriere\JsonDecoder\Property;
+use ReflectionProperty;
 
 class ClassBindings
 {
@@ -40,6 +43,16 @@ class ClassBindings
                 $property = Property::create($instance, $this->bindings[$fieldName]->property());
                 $this->handleBinding($binding, $property, $data);
             } else {
+                if ($this->jsonDecoder->shouldAutoCase()) {
+                    $property = $this->autoCase($fieldName, $instance);
+
+                    if (!is_null($property)) {
+                        $binding = new AliasBinding($property->getName(), $fieldName);
+                        $binding->bind($this->jsonDecoder, $data, $property);
+                        continue;
+                    }
+                }
+
                 $property = Property::create($instance, $fieldName);
                 $this->handleRaw($property, $data);
             }
@@ -104,5 +117,45 @@ class ClassBindings
     private function handleRaw(Property $property, $data)
     {
         (new RawBinding($property->getName()))->bind($this->jsonDecoder, $data, $property);
+    }
+
+    private function autoCase(string $jsonField, $instance): ?Property
+    {
+        $variants = array_filter(
+            [
+                $this->snakeToCamelCase($jsonField),
+                $this->kebapToCamelCase($jsonField),
+            ],
+            function ($variant) use ($jsonField) {
+                return $variant !== $jsonField;
+            }
+        );
+
+        foreach ($variants as $variant) {
+            try {
+                new ReflectionProperty($instance, $variant);
+                return Property::create($instance, $variant);
+            } catch (Exception $ignored) {
+            }
+        }
+
+        return null;
+    }
+
+    private function snakeToCamelCase(string $input)
+    {
+        $fn = function ($c) {
+            return strtoupper($c[1]);
+        };
+
+        return preg_replace_callback('/_([a-z])/', $fn, strtolower($input));
+    }
+
+    private function kebapToCamelCase(string $input)
+    {
+        $output = str_replace('-', '', ucwords($input, '-'));
+        $output[0] = strtolower($output[0]);
+
+        return $output;
     }
 }

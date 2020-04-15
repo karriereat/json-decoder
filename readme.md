@@ -22,6 +22,8 @@ By default the Decoder will iterate over all JSON fields defined and will try to
 
 If a property equally named like the JSON field is found or a explicit `Binding` is defined for the JSON field it will be decoded into the defined place. Otherwise the property will just be created and assigned.
 
+The `JsonDecoder` class can receive one parameter called `shouldAutoCase`. If set to true it will try to find the camel-case version from either snake-case or kebap-case automatically if no other binding was registered for the field and it will use an `AliasBinding` if one of the variants can be found.
+
 ### A simple example
 
 Assume you have a class `Person` that looks like this:

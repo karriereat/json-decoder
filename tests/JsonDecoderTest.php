@@ -12,6 +12,7 @@ use Karriere\JsonDecoder\Exceptions\NotExistingRootException;
 use Karriere\JsonDecoder\JsonDecoder;
 use Karriere\JsonDecoder\Tests\Fakes\Address;
 use Karriere\JsonDecoder\Tests\Fakes\Person;
+use Karriere\JsonDecoder\Tests\Fakes\Sample;
 use Karriere\JsonDecoder\Transformer;
 use PHPUnit\Framework\TestCase;
 
@@ -195,5 +196,31 @@ class JsonDecoderTest extends TestCase
 
         $expectedBirthday = DateTime::createFromFormat(DateTime::ATOM, '2020-01-01T12:00:00+00:00');
         $this->assertEquals($expectedBirthday, $person->birthday());
+    }
+
+    /** @test */
+    public function it_can_auto_case_from_snake_to_camel()
+    {
+        $jsonDecoder = new JsonDecoder(true);
+
+        $sample = $jsonDecoder->decode(file_get_contents(__DIR__ . '/data/sampleInSnakeCase.json'), Sample::class);
+
+        $this->assertInstanceOf(Sample::class, $sample);
+        $this->assertEquals('value 1', $sample->publicProperty());
+        $this->assertEquals('value 2', $sample->protectedProperty());
+        $this->assertEquals('value 3', $sample->privateProperty());
+    }
+
+    /** @test */
+    public function it_can_auto_case_from_kebap_to_camel()
+    {
+        $jsonDecoder = new JsonDecoder(true);
+
+        $sample = $jsonDecoder->decode(file_get_contents(__DIR__ . '/data/sampleInKebapCase.json'), Sample::class);
+
+        $this->assertInstanceOf(Sample::class, $sample);
+        $this->assertEquals('value 1', $sample->publicProperty());
+        $this->assertEquals('value 2', $sample->protectedProperty());
+        $this->assertEquals('value 3', $sample->privateProperty());
     }
 }
