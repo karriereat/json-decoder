@@ -38,7 +38,7 @@ class DateTimeBinding extends Binding
      */
     public function validate(array $jsonData): bool
     {
-        if (array_key_exists($this->jsonField, $jsonData)) {
+        if (array_key_exists($this->jsonField, $jsonData) && !empty($jsonData[$this->jsonField])) {
             return DateTime::createFromFormat($this->format, $jsonData[$this->jsonField]) !== false;
         }
 

@@ -50,6 +50,13 @@ class DateTimeBindingTest extends TestCase
     }
 
     /** @test */
+    public function it_succeeds_on_validation_for_an_empty_field_that_is_not_required()
+    {
+        $binding = new DateTimeBinding('date', 'date', false);
+        $this->assertTrue($binding->validate(['date' => '']));
+    }
+
+    /** @test */
     public function it_binds_an_atom_datetime()
     {
         $binding = new DateTimeBinding('date', 'date');
