@@ -14,8 +14,8 @@ class FieldBindingTest extends TestCase
     /** @test */
     public function it_binds_a_field_to_a_class_instance()
     {
-        $binding = new FieldBinding('address', 'address', Address::class);
-        $person = new Person();
+        $binding  = new FieldBinding('address', 'address', Address::class);
+        $person   = new Person();
         $property = Property::create($person, 'address');
         $jsonData = json_decode(file_get_contents(__DIR__ . '/../data/personWithAddress.json'), true);
 
@@ -29,8 +29,8 @@ class FieldBindingTest extends TestCase
     /** @test */
     public function it_ignores_a_not_defined_field()
     {
-        $binding = new FieldBinding('address', 'address', Address::class);
-        $person = new Person();
+        $binding  = new FieldBinding('address', 'address', Address::class);
+        $person   = new Person();
         $property = Property::create($person, 'address');
 
         $binding->bind(new JsonDecoder(), [], $property);

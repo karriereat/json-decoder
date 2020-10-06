@@ -34,9 +34,9 @@ abstract class Binding
      */
     public function __construct($property, $jsonField, $type, $isRequired = false)
     {
-        $this->property = $property;
-        $this->jsonField = $jsonField;
-        $this->type = $type;
+        $this->property   = $property;
+        $this->jsonField  = $jsonField;
+        $this->type       = $type;
         $this->isRequired = $isRequired;
     }
 
@@ -44,8 +44,6 @@ abstract class Binding
      * validates the given binding data.
      *
      * @param mixed $jsonData
-     *
-     * @return bool
      */
     public function validate(array $jsonData): bool
     {
@@ -71,9 +69,8 @@ abstract class Binding
     /**
      * executes the defined binding method on the class instance.
      *
-     * @param JsonDecoder   $jsonDecoder
-     * @param mixed         $jsonData
-     * @param Property      $property the class instance to bind to
+     * @param mixed    $jsonData
+     * @param Property $property the class instance to bind to
      *
      * @return mixed
      */

@@ -13,8 +13,8 @@ class RawBindingTest extends TestCase
     /** @test */
     public function it_sets_a_raw_value()
     {
-        $binding = new RawBinding('firstname');
-        $person = new Person();
+        $binding  = new RawBinding('firstname');
+        $person   = new Person();
         $property = Property::create($person, 'firstname');
 
         $binding->bind(new JsonDecoder(), ['firstname' => 'John'], $property);
@@ -25,8 +25,8 @@ class RawBindingTest extends TestCase
     /** @test */
     public function it_ignores_a_not_existing_property()
     {
-        $binding = new RawBinding('firstname');
-        $person = new Person();
+        $binding  = new RawBinding('firstname');
+        $person   = new Person();
         $property = Property::create($person, 'firstname');
 
         $binding->bind(new JsonDecoder(), [], $property);

@@ -17,10 +17,10 @@ class DateTimeBinding extends Binding
     /**
      * DateTimeBinding constructor.
      *
-     * @param string $property          the property to bind to
-     * @param string $jsonField         the json field
-     * @param bool   $isRequired        defines if the field value is required during decoding
-     * @param string $dateTimeFormat    defines the date format used for parsing, defaults to DateTime::ATOM
+     * @param string $property       the property to bind to
+     * @param string $jsonField      the json field
+     * @param bool   $isRequired     defines if the field value is required during decoding
+     * @param string $dateTimeFormat defines the date format used for parsing, defaults to DateTime::ATOM
      */
     public function __construct(
         string $property,

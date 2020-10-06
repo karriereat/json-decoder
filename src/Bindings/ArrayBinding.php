@@ -14,7 +14,7 @@ class ArrayBinding extends Binding
     public function bind(JsonDecoder $jsonDecoder, ?array $jsonData, Property $property)
     {
         if (array_key_exists($this->jsonField, $jsonData)) {
-            $data = $jsonData[$this->jsonField];
+            $data   = $jsonData[$this->jsonField];
             $values = [];
 
             if (is_array($data)) {

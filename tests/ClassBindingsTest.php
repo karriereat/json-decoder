@@ -48,7 +48,6 @@ class ClassBindingsTest extends TestCase
 
             public function bind($jsonDecoder, $jsonData, $property)
             {
-
             }
         });
 

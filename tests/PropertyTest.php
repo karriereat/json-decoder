@@ -11,7 +11,7 @@ class PropertyTest extends TestCase
     /** @test */
     public function it_is_able_to_set_public_property()
     {
-        $sample = new Sample();
+        $sample   = new Sample();
         $property = Property::create($sample, 'publicProperty');
 
         $property->set('value');
@@ -22,7 +22,7 @@ class PropertyTest extends TestCase
     /** @test */
     public function it_is_able_to_set_protected_property()
     {
-        $sample = new Sample();
+        $sample   = new Sample();
         $property = Property::create($sample, 'protectedProperty');
 
         $property->set('value');
@@ -33,7 +33,7 @@ class PropertyTest extends TestCase
     /** @test */
     public function it_is_able_to_set_private_property()
     {
-        $sample = new Sample();
+        $sample   = new Sample();
         $property = Property::create($sample, 'privateProperty');
 
         $property->set('value');
@@ -44,7 +44,7 @@ class PropertyTest extends TestCase
     /** @test */
     public function it_is_able_to_set_a_new_property()
     {
-        $sample = new Sample();
+        $sample   = new Sample();
         $property = Property::create($sample, 'newProperty');
 
         $property->set('value');

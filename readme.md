@@ -2,7 +2,6 @@
 <span>&nbsp;&nbsp;&nbsp;</span>
 ![](https://github.com/karriereat/json-decoder/workflows/test/badge.svg)
 ![](https://github.com/karriereat/json-decoder/workflows/lint/badge.svg)
-[![codecov](https://codecov.io/gh/karriereat/json-decoder/branch/master/graph/badge.svg)](https://codecov.io/gh/karriereat/json-decoder)
 
 # JsonDecoder for PHP
 
