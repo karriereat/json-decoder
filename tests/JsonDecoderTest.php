@@ -25,7 +25,7 @@ class JsonDecoderTest extends TestCase
 
         $this->expectException(InvalidJsonException::class);
 
-        $jsonDecoder->decode("invalid", Person::class);
+        $jsonDecoder->decode('invalid', Person::class);
     }
 
     /** @test */
@@ -47,7 +47,7 @@ class JsonDecoderTest extends TestCase
     public function it_is_able_to_decode_json_with_a_transformer()
     {
         $jsonDecoder = new JsonDecoder();
-        $jsonDecoder->register(new class implements Transformer {
+        $jsonDecoder->register(new class() implements Transformer {
             public function register(ClassBindings $classBindings)
             {
                 $classBindings->register(new FieldBinding('address', 'address', Address::class));
@@ -77,7 +77,7 @@ class JsonDecoderTest extends TestCase
     public function it_is_able_to_decode_json_with_a_more_complex_transformer()
     {
         $jsonDecoder = new JsonDecoder();
-        $jsonDecoder->register(new class implements Transformer {
+        $jsonDecoder->register(new class() implements Transformer {
             public function register(ClassBindings $classBindings)
             {
                 $classBindings->register(new AliasBinding('firstname', 'first-name'));
@@ -109,7 +109,7 @@ class JsonDecoderTest extends TestCase
     public function it_decodes_multiple_instances_of_a_type()
     {
         $jsonDecoder = new JsonDecoder();
-        $persons = $jsonDecoder->decodeMultiple(file_get_contents(__DIR__ . '/data/persons.json'), Person::class);
+        $persons     = $jsonDecoder->decodeMultiple(file_get_contents(__DIR__ . '/data/persons.json'), Person::class);
 
         $this->assertIsArray($persons);
         $this->assertCount(2, $persons);
@@ -122,13 +122,13 @@ class JsonDecoderTest extends TestCase
     {
         $jsonDecoder = new JsonDecoder();
 
-        $person = $jsonDecoder->decode("null", Person::class);
+        $person = $jsonDecoder->decode('null', Person::class);
         $this->assertNull($person);
 
-        $person = $jsonDecoder->decode("{}", Person::class);
+        $person = $jsonDecoder->decode('{}', Person::class);
         $this->assertNull($person);
 
-        $jsonDecoder->register(new class implements Transformer {
+        $jsonDecoder->register(new class() implements Transformer {
             public function register(ClassBindings $classBindings)
             {
                 $classBindings->register(new FieldBinding('address', 'address', Address::class));
@@ -140,7 +140,7 @@ class JsonDecoderTest extends TestCase
             }
         });
 
-        $person = $jsonDecoder->decode("{}", Person::class);
+        $person = $jsonDecoder->decode('{}', Person::class);
         $this->assertNull($person);
     }
 

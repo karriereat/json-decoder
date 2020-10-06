@@ -16,7 +16,7 @@ class CallbackBindingTest extends TestCase
         $binding = new CallbackBinding('firstname', function () {
             return 'Jane';
         });
-        $person = new Person();
+        $person   = new Person();
         $property = Property::create($person, 'firstname');
 
         $binding->bind(new JsonDecoder(), [], $property);

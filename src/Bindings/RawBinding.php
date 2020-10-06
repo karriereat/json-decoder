@@ -10,8 +10,6 @@ class RawBinding extends Binding
 {
     /**
      * RawBinding constructor.
-     *
-     * @param string $property
      */
     public function __construct(string $property)
     {

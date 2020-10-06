@@ -14,21 +14,21 @@ class ArrayBindingTest extends TestCase
     /** @test */
     public function it_binds_an_array()
     {
-        $binding = new ArrayBinding('address', 'addresses', Address::class);
-        $person = new Person();
+        $binding  = new ArrayBinding('address', 'addresses', Address::class);
+        $person   = new Person();
         $property = Property::create($person, 'address');
 
         $jsonData = [
             'addresses' => [
                 [
                     'street' => 'Street 1',
-                    'city' => 'City 1',
+                    'city'   => 'City 1',
                 ],
                 [
                     'street' => 'Street 2',
-                    'city' => 'City 2',
+                    'city'   => 'City 2',
                 ],
-            ]
+            ],
         ];
 
         $binding->bind(new JsonDecoder(), $jsonData, $property);
@@ -44,8 +44,8 @@ class ArrayBindingTest extends TestCase
     /** @test */
     public function it_skips_a_not_available_field()
     {
-        $binding = new ArrayBinding('address', 'addresses', Address::class);
-        $person = new Person();
+        $binding  = new ArrayBinding('address', 'addresses', Address::class);
+        $person   = new Person();
         $property = Property::create($person, 'address');
 
         $binding->bind(new JsonDecoder(), [], $property);

@@ -6,8 +6,6 @@ interface Transformer
 {
     /**
      * register field, array, alias and callback bindings.
-     *
-     * @param ClassBindings $classBindings
      */
     public function register(ClassBindings $classBindings);
 

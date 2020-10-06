@@ -59,8 +59,8 @@ class DateTimeBindingTest extends TestCase
     /** @test */
     public function it_binds_an_atom_datetime()
     {
-        $binding = new DateTimeBinding('date', 'date');
-        $person = new Person();
+        $binding  = new DateTimeBinding('date', 'date');
+        $person   = new Person();
         $property = Property::create($person, 'date');
 
         $binding->bind(new JsonDecoder(), ['date' => '2020-01-01T12:00:00+00:00'], $property);
@@ -73,8 +73,8 @@ class DateTimeBindingTest extends TestCase
     /** @test */
     public function it_ignores_an_empty_datetime_value()
     {
-        $binding = new DateTimeBinding('date', 'date');
-        $person = new Person();
+        $binding  = new DateTimeBinding('date', 'date');
+        $person   = new Person();
         $property = Property::create($person, 'date');
 
         $binding->bind(new JsonDecoder(), ['date' => ''], $property);
@@ -85,8 +85,8 @@ class DateTimeBindingTest extends TestCase
     /** @test */
     public function it_ignores_an_invalid_datetime_value()
     {
-        $binding = new DateTimeBinding('date', 'date');
-        $person = new Person();
+        $binding  = new DateTimeBinding('date', 'date');
+        $person   = new Person();
         $property = Property::create($person, 'date');
 
         $binding->bind(new JsonDecoder(), ['date' => 'invalid'], $property);

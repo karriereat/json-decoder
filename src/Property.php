@@ -23,10 +23,10 @@ class Property
     private $property;
 
     /**
-     * creates the property instance
+     * creates the property instance.
      *
-     * @param mixed $instance       the class instance the property lives in
-     * @param string $propertyName  the name of the property
+     * @param mixed  $instance     the class instance the property lives in
+     * @param string $propertyName the name of the property
      *
      * @return static
      */
@@ -44,13 +44,13 @@ class Property
 
     private function __construct($instance, string $propertyName, ReflectionProperty $property = null)
     {
-        $this->instance = $instance;
+        $this->instance     = $instance;
         $this->propertyName = $propertyName;
-        $this->property = $property;
+        $this->property     = $property;
     }
 
     /**
-     * sets the value to the property
+     * sets the value to the property.
      *
      * @param mixed $value
      *
@@ -68,7 +68,7 @@ class Property
     }
 
     /**
-     * gets the name ot the property
+     * gets the name ot the property.
      *
      * @return string
      */

@@ -5,9 +5,9 @@ namespace Karriere\JsonDecoder;
 use Karriere\JsonDecoder\Bindings\DateTimeBinding;
 use Karriere\JsonDecoder\Bindings\FieldBinding;
 use Karriere\JsonDecoder\Bindings\RawBinding;
-use Karriere\JsonDecoder\Exceptions\JsonValueException;
 use Karriere\JsonDecoder\Exceptions\InvalidBindingException;
 use Karriere\JsonDecoder\Exceptions\InvalidJsonException;
+use Karriere\JsonDecoder\Exceptions\JsonValueException;
 use Karriere\JsonDecoder\Exceptions\NotExistingRootException;
 use PhpDocReader\PhpDocReader;
 use ReflectionClass;
@@ -31,8 +31,6 @@ class JsonDecoder
 
     /**
      * registers the given transformer.
-     *
-     * @param Transformer $transformer
      */
     public function register(Transformer $transformer)
     {
@@ -41,7 +39,7 @@ class JsonDecoder
 
     /**
      * scans the given class for annotated properties and creates the transformer for it
-     * at the moment the scanner can detect custom classes and DateTime objects
+     * at the moment the scanner can detect custom classes and DateTime objects.
      *
      * @param string $class the class to check
      *
@@ -58,13 +56,13 @@ class JsonDecoder
     }
 
     /**
-     * Decodes the given JSON string into an instance of the given class type
+     * Decodes the given JSON string into an instance of the given class type.
      *
-     * @param string $json      the input JSON string
-     * @param string $classType the class type of the decoded object
-     * @param string|null $root the root element to decode, if not defined the whole decoded json object will be decoded
+     * @param string      $json      the input JSON string
+     * @param string      $classType the class type of the decoded object
+     * @param string|null $root      the root element to decode, if not defined the whole decoded json object will be decoded
      *
-     * @return mixed            the instance of the given class type
+     * @return mixed the instance of the given class type
      *
      * @throws InvalidJsonException
      * @throws NotExistingRootException
@@ -77,13 +75,13 @@ class JsonDecoder
     }
 
     /**
-     * Decodes the given JSON string into multiple instances of the given class type
+     * Decodes the given JSON string into multiple instances of the given class type.
      *
-     * @param string $json      the input JSON string
-     * @param string $classType the class type of the decoded objects
-     * @param string|null $root the root element to decode, if not defined the whole decoded json object will be decoded
+     * @param string      $json      the input JSON string
+     * @param string      $classType the class type of the decoded objects
+     * @param string|null $root      the root element to decode, if not defined the whole decoded json object will be decoded
      *
-     * @return array            the list of instances decoded for the given class type
+     * @return array the list of instances decoded for the given class type
      *
      * @throws InvalidJsonException
      * @throws NotExistingRootException
@@ -129,13 +127,13 @@ class JsonDecoder
     }
 
     /**
-     * transforms the given json data by using the found transformer
+     * transforms the given json data by using the found transformer.
      *
-     * @param Transformer $transformer  the transformer to use
-     * @param array $jsonArrayData      the actual json data
-     * @param mixed $instance           the class instance to bind to
+     * @param Transformer $transformer   the transformer to use
+     * @param array       $jsonArrayData the actual json data
+     * @param mixed       $instance      the class instance to bind to
      *
-     * @return null|mixed
+     * @return mixed|null
      *
      * @throws JsonValueException if the json data is not valid
      */
@@ -152,12 +150,12 @@ class JsonDecoder
     }
 
     /**
-     * transforms the given data with raw bindings
+     * transforms the given data with raw bindings.
      *
-     * @param mixed $jsonArrayData  the actual json data
-     * @param mixed $instance       the class instance to bind to
+     * @param mixed $jsonArrayData the actual json data
+     * @param mixed $instance      the class instance to bind to
      *
-     * @return null|mixed
+     * @return mixed|null
      *
      * @throws JsonValueException if the json data is not valid
      */
@@ -173,12 +171,12 @@ class JsonDecoder
     }
 
     /**
-     * parses the given json string and eventually selects the defined root key
+     * parses the given json string and eventually selects the defined root key.
      *
-     * @param string $json      the json string to parse
+     * @param string      $json the json string to parse
      * @param string|null $root the optional root key
      *
-     * @return mixed            the json data in array format
+     * @return mixed the json data in array format
      *
      * @throws InvalidJsonException     if the json data cannot be parsed
      * @throws NotExistingRootException if the defined root key does not exist
@@ -203,17 +201,17 @@ class JsonDecoder
     }
 
     /**
-     * scans the given class and creates bindings for annotated properties
+     * scans the given class and creates bindings for annotated properties.
      *
      * @param string $class the class to scan
      *
-     * @return array        the list of generated bindings
+     * @return array the list of generated bindings
      *
      * @throws ReflectionException
      */
     private function scan(string $class)
     {
-        $bindings = [];
+        $bindings        = [];
         $reflectionClass = new ReflectionClass($class);
 
         foreach ($reflectionClass->getProperties() as $property) {
@@ -237,19 +235,17 @@ class JsonDecoder
     }
 
     /**
-     * creates the transformer instance for the given class and generated bindings
+     * creates the transformer instance for the given class and generated bindings.
      *
-     * @param string $class     the class the transformer can handle
-     * @param array $bindings   the bindings that need to be registered
-     *
-     * @return Transformer
+     * @param string $class    the class the transformer can handle
+     * @param array  $bindings the bindings that need to be registered
      */
     private function createTransformer(string $class, array $bindings): Transformer
     {
-        return new class ($class, $bindings) implements Transformer {
+        return new class($class, $bindings) implements Transformer {
             public function __construct($class, $bindings)
             {
-                $this->class = $class;
+                $this->class    = $class;
                 $this->bindings = $bindings;
             }
 

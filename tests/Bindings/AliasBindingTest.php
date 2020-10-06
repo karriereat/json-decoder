@@ -13,8 +13,8 @@ class AliasBindingTest extends TestCase
     /** @test */
     public function it_aliases_a_field()
     {
-        $binding = new AliasBinding('firstname', 'first-name');
-        $person = new Person();
+        $binding  = new AliasBinding('firstname', 'first-name');
+        $person   = new Person();
         $property = Property::create($person, 'firstname');
 
         $binding->bind(new JsonDecoder(), ['first-name' => 'John'], $property);
@@ -25,8 +25,8 @@ class AliasBindingTest extends TestCase
     /** @test */
     public function it_skips_a_not_available_field()
     {
-        $binding = new AliasBinding('lastname', 'lastname');
-        $person = new Person();
+        $binding  = new AliasBinding('lastname', 'lastname');
+        $person   = new Person();
         $property = Property::create($person, 'firstname');
 
         $binding->bind(new JsonDecoder(), ['first-name' => 'John'], $property);

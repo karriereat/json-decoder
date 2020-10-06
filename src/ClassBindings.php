@@ -7,7 +7,6 @@ use Karriere\JsonDecoder\Bindings\AliasBinding;
 use Karriere\JsonDecoder\Bindings\RawBinding;
 use Karriere\JsonDecoder\Exceptions\InvalidBindingException;
 use Karriere\JsonDecoder\Exceptions\JsonValueException;
-use Karriere\JsonDecoder\Property;
 use ReflectionProperty;
 
 class ClassBindings
@@ -30,7 +29,6 @@ class ClassBindings
     /**
      * decodes all available json fields into the given class instance.
      *
-     * @param array $data
      * @param mixed $instance
      *
      * @return mixed
@@ -39,7 +37,7 @@ class ClassBindings
     {
         foreach (array_keys($data) as $fieldName) {
             if ($this->hasBinding($fieldName)) {
-                $binding = $this->bindings[$fieldName];
+                $binding  = $this->bindings[$fieldName];
                 $property = Property::create($instance, $this->bindings[$fieldName]->property());
                 $this->handleBinding($binding, $property, $data);
             } else {
@@ -88,15 +86,15 @@ class ClassBindings
     }
 
     /**
-     * validates and executes the found binding on the given property
+     * validates and executes the found binding on the given property.
      *
-     * @param Binding $binding      the binding to execute
-     * @param Property $property    the property the binding is executed on
-     * @param mixed $data           the actual json array data
+     * @param Binding  $binding  the binding to execute
+     * @param Property $property the property the binding is executed on
+     * @param mixed    $data     the actual json array data
      *
      * @return void
      *
-     * @throws JsonValueException   if the binding validation fails
+     * @throws JsonValueException if the binding validation fails
      */
     private function handleBinding(Binding $binding, Property $property, $data)
     {
@@ -108,9 +106,10 @@ class ClassBindings
     }
 
     /**
-     * builds a raw binding and executes it on the given property
+     * builds a raw binding and executes it on the given property.
+     *
      * @param Property $property the property to execute the binding on
-     * @param mixed $data        the actual json array data
+     * @param mixed    $data     the actual json array data
      *
      * @return void
      */
@@ -120,12 +119,10 @@ class ClassBindings
     }
 
     /**
-     * creates the property variants and checks if one of them is an actual property of the instance
+     * creates the property variants and checks if one of them is an actual property of the instance.
      *
      * @param string $jsonField the json field name used for creating the variants
-     * @param mixed $instance   the class instance
-     *
-     * @return null|Property
+     * @param mixed  $instance  the class instance
      */
     private function autoCase(string $jsonField, $instance): ?Property
     {
@@ -142,6 +139,7 @@ class ClassBindings
         foreach ($variants as $variant) {
             try {
                 new ReflectionProperty($instance, $variant);
+
                 return Property::create($instance, $variant);
             } catch (Exception $ignored) {
             }
@@ -151,7 +149,7 @@ class ClassBindings
     }
 
     /**
-     * converts the given snake case input to camel case
+     * converts the given snake case input to camel case.
      *
      * @param string $input snake case input
      *
@@ -167,7 +165,7 @@ class ClassBindings
     }
 
     /**
-     * converts the given kebap case input to camel case
+     * converts the given kebap case input to camel case.
      *
      * @param string $input kebap case input
      *
@@ -175,7 +173,7 @@ class ClassBindings
      */
     private function kebapToCamelCase(string $input)
     {
-        $output = str_replace('-', '', ucwords($input, '-'));
+        $output    = str_replace('-', '', ucwords($input, '-'));
         $output[0] = strtolower($output[0]);
 
         return $output;
