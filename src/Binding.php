@@ -47,7 +47,7 @@ abstract class Binding
      *
      * @return bool
      */
-    public function validate($jsonData): bool
+    public function validate(array $jsonData): bool
     {
         return !$this->isRequired || array_key_exists($this->jsonField, $jsonData);
     }
@@ -55,19 +55,27 @@ abstract class Binding
     /**
      * @return string the name of the property to bind
      */
-    public function property()
+    public function property(): string
     {
         return $this->property;
     }
 
     /**
+     * @return string the name of the json field to bind
+     */
+    public function jsonField(): string
+    {
+        return $this->jsonField ?? $this->property;
+    }
+
+    /**
      * executes the defined binding method on the class instance.
      *
-     * @param JsonDecoder      $jsonDecoder
-     * @param mixed            $jsonData
-     * @param PropertyAccessor $propertyAccessor the class instance to bind to
+     * @param JsonDecoder   $jsonDecoder
+     * @param mixed         $jsonData
+     * @param Property      $property the class instance to bind to
      *
      * @return mixed
      */
-    abstract public function bind($jsonDecoder, $jsonData, $propertyAccessor);
+    abstract public function bind(JsonDecoder $jsonDecoder, ?array $jsonData, Property $property);
 }

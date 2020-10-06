@@ -3,6 +3,8 @@
 namespace Karriere\JsonDecoder\Bindings;
 
 use Karriere\JsonDecoder\Binding;
+use Karriere\JsonDecoder\JsonDecoder;
+use Karriere\JsonDecoder\Property;
 
 class RawBinding extends Binding
 {
@@ -11,7 +13,7 @@ class RawBinding extends Binding
      *
      * @param string $property
      */
-    public function __construct($property)
+    public function __construct(string $property)
     {
         parent::__construct($property, null, null, false);
     }
@@ -19,7 +21,7 @@ class RawBinding extends Binding
     /**
      * {@inheritdoc}
      */
-    public function validate($jsonData): bool
+    public function validate(array $jsonData): bool
     {
         return true;
     }
@@ -27,10 +29,10 @@ class RawBinding extends Binding
     /**
      * {@inheritdoc}
      */
-    public function bind($jsonDecoder, $jsonData, $propertyAccessor)
+    public function bind(JsonDecoder $jsonDecoder, ?array $jsonData, Property $property)
     {
         if (array_key_exists($this->property, $jsonData)) {
-            $propertyAccessor->set($jsonData[$this->property]);
+            $property->set($jsonData[$this->property]);
         }
     }
 }

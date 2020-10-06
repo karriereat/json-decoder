@@ -4,6 +4,8 @@ namespace Karriere\JsonDecoder\Bindings;
 
 use DateTime;
 use Karriere\JsonDecoder\Binding;
+use Karriere\JsonDecoder\JsonDecoder;
+use Karriere\JsonDecoder\Property;
 
 class DateTimeBinding extends Binding
 {
@@ -20,8 +22,12 @@ class DateTimeBinding extends Binding
      * @param bool   $isRequired        defines if the field value is required during decoding
      * @param string $dateTimeFormat    defines the date format used for parsing, defaults to DateTime::ATOM
      */
-    public function __construct($property, $jsonField, $isRequired = false, $dateTimeFormat = DateTime::ATOM)
-    {
+    public function __construct(
+        string $property,
+        string $jsonField,
+        bool $isRequired = false,
+        string $dateTimeFormat = DateTime::ATOM
+    ) {
         parent::__construct($property, $jsonField, null, $isRequired);
 
         $this->format = $dateTimeFormat;
@@ -30,9 +36,9 @@ class DateTimeBinding extends Binding
     /**
      * {@inheritdoc}
      */
-    public function validate($jsonData): bool
+    public function validate(array $jsonData): bool
     {
-        if (array_key_exists($this->jsonField, $jsonData)) {
+        if (array_key_exists($this->jsonField, $jsonData) && !empty($jsonData[$this->jsonField])) {
             return DateTime::createFromFormat($this->format, $jsonData[$this->jsonField]) !== false;
         }
 
@@ -42,13 +48,13 @@ class DateTimeBinding extends Binding
     /**
      * {@inheritdoc}
      */
-    public function bind($jsonDecoder, $jsonData, $propertyAccessor)
+    public function bind(JsonDecoder $jsonDecoder, ?array $jsonData, Property $property)
     {
         if (array_key_exists($this->jsonField, $jsonData)) {
             $dateTimeObject = DateTime::createFromFormat($this->format, $jsonData[$this->jsonField]);
 
             if ($dateTimeObject !== false) {
-                $propertyAccessor->set($dateTimeObject);
+                $property->set($dateTimeObject);
             }
         }
     }

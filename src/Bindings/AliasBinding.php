@@ -3,6 +3,8 @@
 namespace Karriere\JsonDecoder\Bindings;
 
 use Karriere\JsonDecoder\Binding;
+use Karriere\JsonDecoder\JsonDecoder;
+use Karriere\JsonDecoder\Property;
 
 class AliasBinding extends Binding
 {
@@ -13,7 +15,7 @@ class AliasBinding extends Binding
      * @param string $jsonField  the json field
      * @param bool   $isRequired defines if the field value is required during decoding
      */
-    public function __construct($property, $jsonField, $isRequired = false)
+    public function __construct(string $property, string $jsonField, bool $isRequired = false)
     {
         parent::__construct($property, $jsonField, null, $isRequired);
     }
@@ -21,10 +23,10 @@ class AliasBinding extends Binding
     /**
      * {@inheritdoc}
      */
-    public function bind($jsonDecoder, $jsonData, $propertyAccessor)
+    public function bind(JsonDecoder $jsonDecoder, ?array $jsonData, Property $property)
     {
         if (array_key_exists($this->jsonField, $jsonData)) {
-            $propertyAccessor->set($jsonData[$this->jsonField]);
+            $property->set($jsonData[$this->jsonField]);
         }
     }
 }
