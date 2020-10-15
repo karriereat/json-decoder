@@ -50,7 +50,7 @@ class ClassBindings
                 $binding  = $this->bindings[$fieldName];
                 $property = Property::create($instance, $this->bindings[$fieldName]->property());
                 $this->handleBinding($binding, $property, $data);
-            } else {
+            } elseif (!$this->hasCallbackBinding($fieldName)) { // callback bindings are handled below
                 if ($this->jsonDecoder->shouldAutoCase()) {
                     $property = $this->autoCase($fieldName, $instance);
 
@@ -67,10 +67,8 @@ class ClassBindings
         }
 
         foreach ($this->callbackBindings as $propertyName => $binding) {
-            if (!in_array($propertyName, $jsonFieldNames)) {
-                $property = Property::create($instance, $propertyName);
-                $this->handleBinding($binding, $property, $data);
-            }
+            $property = Property::create($instance, $propertyName);
+            $this->handleBinding($binding, $property, $data);
         }
 
         return $instance;
@@ -102,6 +100,11 @@ class ClassBindings
     public function hasBinding($property)
     {
         return array_key_exists($property, $this->bindings);
+    }
+
+    public function hasCallbackBinding(string $propertyName): bool
+    {
+        return array_key_exists($propertyName, $this->callbackBindings);
     }
 
     /**
