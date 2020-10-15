@@ -18,6 +18,11 @@ class ClassBindings
     private $bindings = [];
 
     /**
+     * @var array
+     */
+    private $callbackBindings = [];
+
+    /**
      * @var JsonDecoder
      */
     private $jsonDecoder;
@@ -61,9 +66,9 @@ class ClassBindings
             }
         }
 
-        foreach ($this->callbackBindings() as $binding) {
-            if (!in_array($binding->property(), $jsonFieldNames)) {
-                $property = Property::create($instance, $binding->property());
+        foreach ($this->callbackBindings as $propertyName => $binding) {
+            if (!in_array($propertyName, $jsonFieldNames)) {
+                $property = Property::create($instance, $propertyName);
                 $this->handleBinding($binding, $property, $data);
             }
         }
@@ -80,9 +85,11 @@ class ClassBindings
     {
         if (!$binding instanceof Binding) {
             throw new InvalidBindingException();
+        } elseif ($binding instanceof CallbackBinding) {
+            $this->callbackBindings[$binding->property()] = $binding;
+        } else {
+            $this->bindings[$binding->jsonField()] = $binding;
         }
-
-        $this->bindings[$binding->jsonField()] = $binding;
     }
 
     /**
@@ -189,15 +196,5 @@ class ClassBindings
         $output[0] = strtolower($output[0]);
 
         return $output;
-    }
-
-    /**
-     * @return CallbackBinding[]
-     */
-    private function callbackBindings(): array
-    {
-        return array_filter($this->bindings, function ($binding) {
-            return $binding instanceof CallbackBinding;
-        });
     }
 }
