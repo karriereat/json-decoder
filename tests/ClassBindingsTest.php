@@ -3,6 +3,7 @@
 namespace Karriere\JsonDecoder\Tests;
 
 use Karriere\JsonDecoder\Binding;
+use Karriere\JsonDecoder\Bindings\CallbackBinding;
 use Karriere\JsonDecoder\Bindings\FieldBinding;
 use Karriere\JsonDecoder\ClassBindings;
 use Karriere\JsonDecoder\Exceptions\InvalidBindingException;
@@ -54,5 +55,18 @@ class ClassBindingsTest extends TestCase
         $this->expectException(JsonValueException::class);
 
         $classBindings->decode(['firstname' => 'John'], new Person());
+    }
+
+    /** @test */
+    public function it_executes_callback_bindings_when_property_name_is_not_contained_in_json_fields()
+    {
+        $classBindings = new ClassBindings(new JsonDecoder());
+        $classBindings->register(new CallbackBinding('somePropertyName', function () {
+            return 'yes';
+        }));
+
+        $person = $classBindings->decode(['firstname' => 'John'], new Person());
+
+        $this->assertEquals('yes', $person->somePropertyName);
     }
 }

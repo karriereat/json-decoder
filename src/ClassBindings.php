@@ -4,6 +4,7 @@ namespace Karriere\JsonDecoder;
 
 use Exception;
 use Karriere\JsonDecoder\Bindings\AliasBinding;
+use Karriere\JsonDecoder\Bindings\CallbackBinding;
 use Karriere\JsonDecoder\Bindings\RawBinding;
 use Karriere\JsonDecoder\Exceptions\InvalidBindingException;
 use Karriere\JsonDecoder\Exceptions\JsonValueException;
@@ -15,6 +16,11 @@ class ClassBindings
      * @var array
      */
     private $bindings = [];
+
+    /**
+     * @var array
+     */
+    private $callbackBindings = [];
 
     /**
      * @var JsonDecoder
@@ -32,10 +38,14 @@ class ClassBindings
      * @param mixed $instance
      *
      * @return mixed
+     *
+     * @throws JsonValueException
      */
     public function decode(array $data, $instance)
     {
-        foreach (array_keys($data) as $fieldName) {
+        $jsonFieldNames = array_keys($data);
+
+        foreach ($jsonFieldNames as $fieldName) {
             if ($this->hasBinding($fieldName)) {
                 $binding  = $this->bindings[$fieldName];
                 $property = Property::create($instance, $this->bindings[$fieldName]->property());
@@ -56,6 +66,13 @@ class ClassBindings
             }
         }
 
+        foreach ($this->callbackBindings as $propertyName => $binding) {
+            if (!in_array($propertyName, $jsonFieldNames)) {
+                $property = Property::create($instance, $propertyName);
+                $this->handleBinding($binding, $property, $data);
+            }
+        }
+
         return $instance;
     }
 
@@ -68,9 +85,11 @@ class ClassBindings
     {
         if (!$binding instanceof Binding) {
             throw new InvalidBindingException();
+        } elseif ($binding instanceof CallbackBinding) {
+            $this->callbackBindings[$binding->property()] = $binding;
+        } else {
+            $this->bindings[$binding->jsonField()] = $binding;
         }
-
-        $this->bindings[$binding->jsonField()] = $binding;
     }
 
     /**
