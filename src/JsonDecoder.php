@@ -137,7 +137,7 @@ class JsonDecoder
      *
      * @throws JsonValueException if the json data is not valid
      */
-    protected function transform(Transformer $transformer, array $jsonArrayData, $instance)
+    protected function transform(Transformer $transformer, ?array $jsonArrayData, $instance)
     {
         if (empty($jsonArrayData)) {
             return null;
