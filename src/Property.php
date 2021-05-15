@@ -76,4 +76,9 @@ class Property
     {
         return $this->propertyName;
     }
+
+    public function isNewProperty()
+    {
+        return $this->property == null;
+    }
 }

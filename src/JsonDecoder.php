@@ -2,8 +2,12 @@
 
 namespace Karriere\JsonDecoder;
 
+use Karriere\JsonDecoder\Attributes\JsonArray;
+use Karriere\JsonDecoder\Attributes\JsonClass;
+use Karriere\JsonDecoder\Attributes\JsonHideUnmapped;
 use Karriere\JsonDecoder\Bindings\DateTimeBinding;
 use Karriere\JsonDecoder\Bindings\FieldBinding;
+use Karriere\JsonDecoder\Bindings\HideUnmappedBinding;
 use Karriere\JsonDecoder\Bindings\RawBinding;
 use Karriere\JsonDecoder\Exceptions\InvalidBindingException;
 use Karriere\JsonDecoder\Exceptions\InvalidJsonException;
@@ -24,9 +28,15 @@ class JsonDecoder
      */
     private $shouldAutoCase = false;
 
-    public function __construct(bool $shouldAutoCase = false)
+    /**
+     * @var bool
+     */
+    private $hideUnmapped = false;
+
+    public function __construct(bool $shouldAutoCase = false, bool $hideUnmapped = false)
     {
         $this->shouldAutoCase = $shouldAutoCase;
+        $this->hideUnmapped   = $hideUnmapped;
     }
 
     /**
@@ -47,7 +57,8 @@ class JsonDecoder
      */
     public function scanAndRegister(string $class)
     {
-        $bindings = $this->scan($class);
+        $bindings  = $this->scan($class);
+        $bindings = $this->attributeScan($class);
 
         if (!empty($bindings)) {
             $transformer = $this->createTransformer($class, $bindings);
@@ -60,7 +71,8 @@ class JsonDecoder
      *
      * @param string      $json      the input JSON string
      * @param string      $classType the class type of the decoded object
-     * @param string|null $root      the root element to decode, if not defined the whole decoded json object will be decoded
+     * @param string|null $root      the root element to decode, if not defined
+     *                               the whole decoded json object will be used
      *
      * @return mixed the instance of the given class type
      *
@@ -79,7 +91,8 @@ class JsonDecoder
      *
      * @param string      $json      the input JSON string
      * @param string      $classType the class type of the decoded objects
-     * @param string|null $root      the root element to decode, if not defined the whole decoded json object will be decoded
+     * @param string|null $root      the root element to decode, if not defined
+     *                               the whole decoded json object will be decoded
      *
      * @return array the list of instances decoded for the given class type
      *
@@ -124,6 +137,11 @@ class JsonDecoder
     public function shouldAutoCase(): bool
     {
         return $this->shouldAutoCase;
+    }
+
+    public function hideUnmapped(): bool
+    {
+        return $this->hideUnmapped;
     }
 
     /**
@@ -228,6 +246,48 @@ class JsonDecoder
                 }
             } else {
                 $bindings[] = new RawBinding($propertyName);
+            }
+        }
+
+        return $bindings;
+    }
+
+    /**
+     * Scans the given class and creates bindings for attributes.
+     *
+     * @param string $class the class to scan
+     *
+     * @return array the list of generated bindings
+     *
+     * @throws ReflectionException
+     */
+    private function attributeScan(string $class)
+    {
+        $bindings        = [];
+        $reflectionClass = new ReflectionClass($class);
+
+        $classAttributes = $reflectionClass->getAttributes();
+
+        foreach ($classAttributes as $attribute) {
+            $attribute = $attribute->newInstance();
+
+            if ($attribute instanceof JsonHideUnmapped) {
+                $bindings[] = new HideUnmappedBinding('', '', '');
+            }
+        }
+
+        foreach ($reflectionClass->getProperties() as $property) {
+            $propertyName = $property->getName();
+            $attributes   = $property->getAttributes();
+
+            foreach ($attributes as $attribute) {
+                $attribute = $attribute->newInstance();
+
+                $bindings[] = $attribute->getBinding($propertyName);
+
+                if ($attribute instanceof JsonClass || $attribute instanceof JsonArray) {
+                    $this->scanAndRegister($attribute->className);
+                }
             }
         }
 

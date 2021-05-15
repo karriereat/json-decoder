@@ -5,7 +5,9 @@ namespace Karriere\JsonDecoder;
 use Exception;
 use Karriere\JsonDecoder\Bindings\AliasBinding;
 use Karriere\JsonDecoder\Bindings\CallbackBinding;
+use Karriere\JsonDecoder\Bindings\HideUnmappedBinding;
 use Karriere\JsonDecoder\Bindings\RawBinding;
+use Karriere\JsonDecoder\Bindings\StaticCallbackBinding;
 use Karriere\JsonDecoder\Exceptions\InvalidBindingException;
 use Karriere\JsonDecoder\Exceptions\JsonValueException;
 use ReflectionProperty;
@@ -21,6 +23,11 @@ class ClassBindings
      * @var array
      */
     private $callbackBindings = [];
+
+    /**
+     * @var bool
+     */
+    private $hideUnmapped = false;
 
     /**
      * @var JsonDecoder
@@ -62,6 +69,10 @@ class ClassBindings
                 }
 
                 $property = Property::create($instance, $fieldName);
+
+                if (($this->jsonDecoder->hideUnmapped() || $this->hideUnmapped) && $property->isNewProperty()) {
+                    continue;
+                }
                 $this->handleRaw($property, $data);
             }
         }
@@ -83,8 +94,10 @@ class ClassBindings
     {
         if (!$binding instanceof Binding) {
             throw new InvalidBindingException();
-        } elseif ($binding instanceof CallbackBinding) {
+        } elseif ($binding instanceof CallbackBinding || $binding instanceof StaticCallbackBinding) {
             $this->callbackBindings[$binding->property()] = $binding;
+        } elseif ($binding instanceof HideUnmappedBinding) {
+            $this->hideUnmapped = true;
         } else {
             $this->bindings[$binding->jsonField()] = $binding;
         }
