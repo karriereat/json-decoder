@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
 class ArrayBindingTest extends TestCase
 {
     /** @test */
-    public function it_binds_an_array()
+    public function itBindsAnArray()
     {
         $binding  = new ArrayBinding('address', 'addresses', Address::class);
         $person   = new Person();
@@ -42,7 +42,7 @@ class ArrayBindingTest extends TestCase
     }
 
     /** @test */
-    public function it_skips_a_not_available_field()
+    public function itSkipsANotAvailableField()
     {
         $binding  = new ArrayBinding('address', 'addresses', Address::class);
         $person   = new Person();

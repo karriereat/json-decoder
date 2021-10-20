@@ -15,7 +15,7 @@ use PHPUnit\Framework\TestCase;
 class ClassBindingsTest extends TestCase
 {
     /** @test */
-    public function it_registers_a_binding()
+    public function itRegistersABinding()
     {
         $classBindings = new ClassBindings(new JsonDecoder());
 
@@ -27,7 +27,7 @@ class ClassBindingsTest extends TestCase
     }
 
     /** @test */
-    public function it_registers_a_callback_binding()
+    public function itRegistersACallbackBinding()
     {
         $classBindings = new ClassBindings(new JsonDecoder());
 
@@ -41,7 +41,7 @@ class ClassBindingsTest extends TestCase
     }
 
     /** @test */
-    public function it_fails_to_register_a_not_compatible_binding_class()
+    public function itFailsToRegisterANotCompatibleBindingClass()
     {
         $classBindings = new ClassBindings(new JsonDecoder());
 
@@ -51,7 +51,7 @@ class ClassBindingsTest extends TestCase
     }
 
     /** @test */
-    public function it_throws_an_exception_if_binding_validation_fails()
+    public function itThrowsAnExceptionIfBindingValidationFails()
     {
         $classBindings = new ClassBindings(new JsonDecoder());
 
@@ -72,7 +72,7 @@ class ClassBindingsTest extends TestCase
     }
 
     /** @test */
-    public function it_executes_callback_bindings_when_property_name_is_contained_in_json_fields()
+    public function itExecutesCallbackBindingsWhenPropertyNameIsContainedInJsonFields()
     {
         $classBindings = new ClassBindings(new JsonDecoder());
         $classBindings->register(new CallbackBinding('firstname', function ($data) {
@@ -85,7 +85,7 @@ class ClassBindingsTest extends TestCase
     }
 
     /** @test */
-    public function it_executes_callback_bindings_when_property_name_is_not_contained_in_json_fields()
+    public function itExecutesCallbackBindingsWhenPropertyNameIsNotContainedInJsonFields()
     {
         $classBindings = new ClassBindings(new JsonDecoder());
         $classBindings->register(new CallbackBinding('somePropertyName', function () {

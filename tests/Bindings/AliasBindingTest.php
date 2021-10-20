@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
 class AliasBindingTest extends TestCase
 {
     /** @test */
-    public function it_aliases_a_field()
+    public function itAliasesAField()
     {
         $binding  = new AliasBinding('firstname', 'first-name');
         $person   = new Person();
@@ -23,7 +23,7 @@ class AliasBindingTest extends TestCase
     }
 
     /** @test */
-    public function it_skips_a_not_available_field()
+    public function itSkipsANotAvailableField()
     {
         $binding  = new AliasBinding('lastname', 'lastname');
         $person   = new Person();
