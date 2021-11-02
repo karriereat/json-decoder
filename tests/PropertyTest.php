@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 class PropertyTest extends TestCase
 {
     /** @test */
-    public function it_is_able_to_set_public_property()
+    public function itIsAbleToSetPublicProperty()
     {
         $sample   = new Sample();
         $property = Property::create($sample, 'publicProperty');
@@ -20,7 +20,7 @@ class PropertyTest extends TestCase
     }
 
     /** @test */
-    public function it_is_able_to_set_protected_property()
+    public function itIsAbleToSetProtectedProperty()
     {
         $sample   = new Sample();
         $property = Property::create($sample, 'protectedProperty');
@@ -31,7 +31,7 @@ class PropertyTest extends TestCase
     }
 
     /** @test */
-    public function it_is_able_to_set_private_property()
+    public function itIsAbleToSetPrivateProperty()
     {
         $sample   = new Sample();
         $property = Property::create($sample, 'privateProperty');
@@ -42,7 +42,7 @@ class PropertyTest extends TestCase
     }
 
     /** @test */
-    public function it_is_able_to_set_a_new_property()
+    public function itIsAbleToSetANewProperty()
     {
         $sample   = new Sample();
         $property = Property::create($sample, 'newProperty');

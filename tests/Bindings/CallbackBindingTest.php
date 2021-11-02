@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
 class CallbackBindingTest extends TestCase
 {
     /** @test */
-    public function it_binds_with_a_callback()
+    public function itBindsWithACallback()
     {
         $binding = new CallbackBinding('firstname', function () {
             return 'Jane';
@@ -25,7 +25,7 @@ class CallbackBindingTest extends TestCase
     }
 
     /** @test */
-    public function it_always_validates_to_true()
+    public function itAlwaysValidatesToTrue()
     {
         $binding = new CallbackBinding('firstname', function () {
             return 'Jane';

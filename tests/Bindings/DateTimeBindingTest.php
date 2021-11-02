@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
 class DateTimeBindingTest extends TestCase
 {
     /** @test */
-    public function it_validates_successfully()
+    public function itValidatesSuccessfully()
     {
         $binding = new DateTimeBinding('date', 'date');
 
@@ -20,7 +20,7 @@ class DateTimeBindingTest extends TestCase
     }
 
     /** @test */
-    public function it_fails_on_validation_of_a_required_property_with_an_invalid_date_format()
+    public function itFailsOnValidationOfARequiredPropertyWithAnInvalidDateFormat()
     {
         $binding = new DateTimeBinding('date', 'date', true);
 
@@ -28,7 +28,7 @@ class DateTimeBindingTest extends TestCase
     }
 
     /** @test */
-    public function it_fails_on_validation_of_a_not_required_property_with_an_invalid_date_format()
+    public function itFailsOnValidationOfANotRequiredPropertyWithAnInvalidDateFormat()
     {
         $binding = new DateTimeBinding('date', 'date', false);
 
@@ -36,28 +36,28 @@ class DateTimeBindingTest extends TestCase
     }
 
     /** @test */
-    public function it_fails_on_validation_for_a_not_set_field_that_is_required()
+    public function itFailsOnValidationForANotSetFieldThatIsRequired()
     {
         $binding = new DateTimeBinding('date', 'date', true);
         $this->assertFalse($binding->validate([]));
     }
 
     /** @test */
-    public function it_succeeds_on_validation_for_a_not_set_field_that_is_not_required()
+    public function itSucceedsOnValidationForANotSetFieldThatIsNotRequired()
     {
         $binding = new DateTimeBinding('date', 'date', false);
         $this->assertTrue($binding->validate([]));
     }
 
     /** @test */
-    public function it_succeeds_on_validation_for_an_empty_field_that_is_not_required()
+    public function itSucceedsOnValidationForAnEmptyFieldThatIsNotRequired()
     {
         $binding = new DateTimeBinding('date', 'date', false);
         $this->assertTrue($binding->validate(['date' => '']));
     }
 
     /** @test */
-    public function it_binds_an_atom_datetime()
+    public function itBindsAnAtomDatetime()
     {
         $binding  = new DateTimeBinding('date', 'date');
         $person   = new Person();
@@ -71,7 +71,7 @@ class DateTimeBindingTest extends TestCase
     }
 
     /** @test */
-    public function it_ignores_an_empty_datetime_value()
+    public function itIgnoresAnEmptyDatetimeValue()
     {
         $binding  = new DateTimeBinding('date', 'date');
         $person   = new Person();
@@ -83,7 +83,7 @@ class DateTimeBindingTest extends TestCase
     }
 
     /** @test */
-    public function it_ignores_an_invalid_datetime_value()
+    public function itIgnoresAnInvalidDatetimeValue()
     {
         $binding  = new DateTimeBinding('date', 'date');
         $person   = new Person();

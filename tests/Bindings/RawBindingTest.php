@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
 class RawBindingTest extends TestCase
 {
     /** @test */
-    public function it_sets_a_raw_value()
+    public function itSetsARawValue()
     {
         $binding  = new RawBinding('firstname');
         $person   = new Person();
@@ -23,7 +23,7 @@ class RawBindingTest extends TestCase
     }
 
     /** @test */
-    public function it_ignores_a_not_existing_property()
+    public function itIgnoresANotExistingProperty()
     {
         $binding  = new RawBinding('firstname');
         $person   = new Person();
@@ -35,7 +35,7 @@ class RawBindingTest extends TestCase
     }
 
     /** @test */
-    public function it_always_validates_to_true()
+    public function itAlwaysValidatesToTrue()
     {
         $binding = new RawBinding('firstname');
 

@@ -19,7 +19,7 @@ use PHPUnit\Framework\TestCase;
 class JsonDecoderTest extends TestCase
 {
     /** @test */
-    public function it_fails_for_an_invalid_json_input()
+    public function itFailsForAnInvalidJsonInput()
     {
         $jsonDecoder = new JsonDecoder();
 
@@ -29,7 +29,7 @@ class JsonDecoderTest extends TestCase
     }
 
     /** @test */
-    public function it_is_able_to_decode_json_without_a_transformer()
+    public function itIsAbleToDecodeJsonWithoutATransformer()
     {
         $jsonDecoder = new JsonDecoder();
 
@@ -44,7 +44,7 @@ class JsonDecoderTest extends TestCase
     }
 
     /** @test */
-    public function it_is_able_to_decode_json_with_a_transformer()
+    public function itIsAbleToDecodeJsonWithATransformer()
     {
         $jsonDecoder = new JsonDecoder();
         $jsonDecoder->register(new class() implements Transformer {
@@ -74,7 +74,7 @@ class JsonDecoderTest extends TestCase
     }
 
     /** @test */
-    public function it_is_able_to_decode_json_with_a_more_complex_transformer()
+    public function itIsAbleToDecodeJsonWithAMoreComplexTransformer()
     {
         $jsonDecoder = new JsonDecoder();
         $jsonDecoder->register(new class() implements Transformer {
@@ -106,7 +106,7 @@ class JsonDecoderTest extends TestCase
     }
 
     /** @test */
-    public function it_decodes_multiple_instances_of_a_type()
+    public function itDecodesMultipleInstancesOfAType()
     {
         $jsonDecoder = new JsonDecoder();
         $persons     = $jsonDecoder->decodeMultiple(file_get_contents(__DIR__ . '/data/persons.json'), Person::class);
@@ -118,7 +118,7 @@ class JsonDecoderTest extends TestCase
     }
 
     /** @test */
-    public function it_handles_empty_json_strings_gracefully()
+    public function itHandlesEmptyJsonStringsGracefully()
     {
         $jsonDecoder = new JsonDecoder();
 
@@ -145,7 +145,7 @@ class JsonDecoderTest extends TestCase
     }
 
     /** @test */
-    public function it_decodes_an_object_with_a_root_key()
+    public function itDecodesAnObjectWithARootKey()
     {
         $jsonDecoder = new JsonDecoder();
 
@@ -157,7 +157,7 @@ class JsonDecoderTest extends TestCase
     }
 
     /** @test */
-    public function it_decodes_multiple_objects_with_a_root_key()
+    public function itDecodesMultipleObjectsWithARootKey()
     {
         $jsonDecoder = new JsonDecoder();
 
@@ -171,7 +171,7 @@ class JsonDecoderTest extends TestCase
     }
 
     /** @test */
-    public function it_fails_for_not_existing_root_key()
+    public function itFailsForNotExistingRootKey()
     {
         $this->expectException(NotExistingRootException::class);
 
@@ -180,7 +180,7 @@ class JsonDecoderTest extends TestCase
     }
 
     /** @test */
-    public function it_scans_a_class_and_generates_a_transformer()
+    public function itScansAClassAndGeneratesATransformer()
     {
         $jsonDecoder = new JsonDecoder();
         $jsonDecoder->scanAndRegister(Person::class);
@@ -199,7 +199,7 @@ class JsonDecoderTest extends TestCase
     }
 
     /** @test */
-    public function it_can_auto_case_from_snake_to_camel()
+    public function itCanAutoCaseFromSnakeToCamel()
     {
         $jsonDecoder = new JsonDecoder(true);
 
@@ -212,7 +212,7 @@ class JsonDecoderTest extends TestCase
     }
 
     /** @test */
-    public function it_can_auto_case_from_kebap_to_camel()
+    public function itCanAutoCaseFromKebapToCamel()
     {
         $jsonDecoder = new JsonDecoder(true);
 
