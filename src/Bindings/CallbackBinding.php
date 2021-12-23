@@ -16,9 +16,6 @@ class CallbackBinding extends Binding
 
     /**
      * CallbackBinding constructor.
-     *
-     * @param string $property
-     * @param Closure $callback
      */
     public function __construct(string $property, Closure $callback)
     {

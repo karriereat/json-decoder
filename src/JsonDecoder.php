@@ -103,8 +103,8 @@ class JsonDecoder
     /**
      * decodes the given array data into an instance of the given class type.
      *
-     * @param $jsonArrayData array
-     * @param $classType string
+     * @param array  $jsonArrayData
+     * @param string $classType
      *
      * @return mixed an instance of $classType
      */
@@ -207,7 +207,7 @@ class JsonDecoder
      *
      * @return array the list of generated bindings
      *
-     * @throws ReflectionException
+     * @throws \ReflectionException
      */
     private function scan(string $class)
     {
@@ -243,6 +243,9 @@ class JsonDecoder
     private function createTransformer(string $class, array $bindings): Transformer
     {
         return new class($class, $bindings) implements Transformer {
+            private $class;
+            private $bindings;
+
             public function __construct($class, $bindings)
             {
                 $this->class    = $class;

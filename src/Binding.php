@@ -10,12 +10,12 @@ abstract class Binding
     protected $property;
 
     /**
-     * @var string
+     * @var ?string
      */
     protected $jsonField;
 
     /**
-     * @var string
+     * @var ?string
      */
     protected $type;
 
@@ -27,10 +27,10 @@ abstract class Binding
     /**
      * FieldBinding constructor.
      *
-     * @param string $property   the property to bind to
-     * @param string $jsonField  the json field
-     * @param string $type       the desired type of the property
-     * @param bool   $isRequired defines if the field value is required during decoding
+     * @param string  $property   the property to bind to
+     * @param ?string $jsonField  the json field
+     * @param ?string $type       the desired type of the property
+     * @param bool    $isRequired defines if the field value is required during decoding
      */
     public function __construct($property, $jsonField, $type, $isRequired = false)
     {
@@ -42,8 +42,6 @@ abstract class Binding
 
     /**
      * validates the given binding data.
-     *
-     * @param mixed $jsonData
      */
     public function validate(array $jsonData): bool
     {
@@ -69,7 +67,7 @@ abstract class Binding
     /**
      * executes the defined binding method on the class instance.
      *
-     * @param mixed    $jsonData
+     * @param ?array   $jsonData
      * @param Property $property the class instance to bind to
      *
      * @return mixed

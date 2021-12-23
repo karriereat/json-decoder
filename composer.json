@@ -26,12 +26,14 @@
     },
     "require-dev": {
         "phpunit/phpunit": "^8.0 || ^9.0",
-        "friendsofphp/php-cs-fixer": "^2.16"
+        "friendsofphp/php-cs-fixer": "^2.16",
+        "phpstan/phpstan": "^1.2"
     },
     "scripts": {
         "test": "phpunit",
         "coverage": "phpunit --coverage-clover coverage.xml",
         "lint": "php-cs-fixer fix -v --dry-run",
-        "fix": "php-cs-fixer fix -v"
+        "fix": "php-cs-fixer fix -v",
+        "analyse": "phpstan analyse src --level 5"
     }
 }
