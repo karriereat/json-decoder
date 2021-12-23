@@ -18,7 +18,7 @@ class Property
     private $propertyName;
 
     /**
-     * @var ReflectionProperty
+     * @var ?ReflectionProperty
      */
     private $property;
 
@@ -28,7 +28,7 @@ class Property
      * @param mixed  $instance     the class instance the property lives in
      * @param string $propertyName the name of the property
      *
-     * @return static
+     * @return self
      */
     public static function create($instance, string $propertyName)
     {
@@ -39,7 +39,7 @@ class Property
         } catch (Exception $ignored) {
         }
 
-        return new static($instance, $propertyName, $property);
+        return new self($instance, $propertyName, $property);
     }
 
     private function __construct($instance, string $propertyName, ReflectionProperty $property = null)
