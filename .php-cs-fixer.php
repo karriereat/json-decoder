@@ -3,12 +3,11 @@
 $finder = PhpCsFixer\Finder::create()
     ->in(__DIR__ . DIRECTORY_SEPARATOR . 'tests')
     ->in(__DIR__ . DIRECTORY_SEPARATOR . 'src')
-    ->append(['.php_cs']);
+    ->append(['.php-cs-fixer.php']);
 
 $rules = [
     '@Symfony'               => true,
     'phpdoc_no_empty_return' => false,
-    'array_syntax'           => ['syntax' => 'short'],
     'yoda_style'             => false,
     'binary_operator_spaces' => [
         'operators' => [
@@ -18,11 +17,10 @@ $rules = [
     ],
     'concat_space'            => ['spacing' => 'one'],
     'not_operator_with_space' => false,
+    'increment_style'         => ['style' => 'post'],
 ];
 
-$rules['increment_style'] = ['style' => 'post'];
-
-return PhpCsFixer\Config::create()
+return (new PhpCsFixer\Config())
     ->setUsingCache(true)
     ->setRules($rules)
     ->setFinder($finder);
