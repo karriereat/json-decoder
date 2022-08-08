@@ -1,4 +1,4 @@
-<a href="https://www.karriere.at/" target="_blank"><img width="200" src="http://www.karriere.at/images/layout/katlogo.svg"></a>
+<a href="https://www.karriere.at/" target="_blank"><img width="200" src="https://raw.githubusercontent.com/karriereat/.github/main/profile/logo.svg"></a>
 <span>&nbsp;&nbsp;&nbsp;</span>
 ![](https://github.com/karriereat/json-decoder/workflows/test/badge.svg)
 ![](https://github.com/karriereat/json-decoder/workflows/lint/badge.svg)
