@@ -18,8 +18,8 @@ class ArrayBinding extends Binding
             $values = [];
 
             if (is_array($data)) {
-                foreach ($data as $item) {
-                    $values[] = $jsonDecoder->decodeArray($item, $this->type);
+                foreach ($data as $key  => $item) {
+                    $values[$key] = $jsonDecoder->decodeArray($item, $this->type);
                 }
 
                 $property->set($values);
