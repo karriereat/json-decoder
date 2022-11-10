@@ -44,19 +44,19 @@ class ArrayBindingTest extends TestCase
     /** @test */
     public function itBindsAnArrayPreservingKeys()
     {
-        $binding  = new ArrayBinding('address', 'addresses', Address::class);
-        $person   = new Person();
+        $binding = new ArrayBinding('address', 'addresses', Address::class);
+        $person  = new Person();
         $property = Property::create($person, 'address');
 
         $jsonData = [
             'addresses' => [
                 'address key #1' => [
                     'street' => 'Street 1',
-                    'city'   => 'City 1',
+                    'city' => 'City 1',
                 ],
-                'address key #2' =>  [
+                'address key #2' => [
                     'street' => 'Street 2',
-                    'city'   => 'City 2',
+                    'city' => 'City 2',
                 ],
             ],
         ];
