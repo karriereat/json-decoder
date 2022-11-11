@@ -6,10 +6,11 @@ $finder = PhpCsFixer\Finder::create()
     ->append(['.php-cs-fixer.php']);
 
 $rules = [
-    '@Symfony'               => true,
-    'phpdoc_no_empty_return' => false,
-    'yoda_style'             => false,
-    'binary_operator_spaces' => [
+    '@Symfony'                => true,
+    'global_namespace_import' => false,
+    'phpdoc_no_empty_return'  => false,
+    'yoda_style'              => false,
+    'binary_operator_spaces'  => [
         'operators' => [
             '=>' => 'align',
             '='  => 'align',
