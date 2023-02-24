@@ -1,54 +1,83 @@
 <?php
 
-namespace Karriere\JsonDecoder\Tests;
-
 use Karriere\JsonDecoder\Property;
+use Karriere\JsonDecoder\Tests\Fakes\NoDynamicPropertyAllowed;
 use Karriere\JsonDecoder\Tests\Fakes\Sample;
-use PHPUnit\Framework\TestCase;
 
-class PropertyTest extends TestCase
-{
-    /** @test */
-    public function itIsAbleToSetPublicProperty()
-    {
-        $sample   = new Sample();
-        $property = Property::create($sample, 'publicProperty');
+it('is able to set all sorts of untyped properties', function (string $propertyName, bool $methodAccess = true) {
+    $sample = new Sample();
+    (Property::create($sample, $propertyName))->set('value');
 
-        $property->set('value');
-
-        $this->assertEquals('value', $sample->publicProperty);
+    if ($methodAccess) {
+        expect($sample->{$propertyName}())->toEqual('value');
+    } else {
+        expect($sample->{$propertyName})->toEqual('value');
     }
+})->with([
+    'public' => [
+        'name' => 'publicProperty',
+    ],
+    'protected' => [
+        'name' => 'protectedProperty',
+    ],
+    'private' => [
+        'name' => 'privateProperty',
+    ],
+    'new' => [
+        'name' => 'newProperty',
+        'methodAccess' => false,
+    ],
+]);
 
-    /** @test */
-    public function itIsAbleToSetProtectedProperty()
-    {
-        $sample   = new Sample();
-        $property = Property::create($sample, 'protectedProperty');
+it('does not set dynamic property if they are not allowed', function () {
+    $object = new NoDynamicPropertyAllowed();
+    (Property::create($object, 'dynamicProperty'))->set('value');
 
-        $property->set('value');
-
-        $this->assertEquals('value', $sample->protectedProperty());
+    if (version_compare(PHP_VERSION, '8.2.0', '<')) {
+        expect($object)->toHaveProperty('dynamicProperty');
+    } else {
+        expect($object)->not->toHaveProperty('dynamicProperty');
     }
+});
 
-    /** @test */
-    public function itIsAbleToSetPrivateProperty()
-    {
-        $sample   = new Sample();
-        $property = Property::create($sample, 'privateProperty');
+it('sets value if property has type and it matches the values type', function () {
+    $sample = new Sample();
+    (Property::create($sample, 'intProperty'))->set(10);
 
-        $property->set('value');
+    expect($sample)->intProperty()->toEqual(10);
+});
 
-        $this->assertEquals('value', $sample->privateProperty());
-    }
+it('sets value to null if null is passed and property has nullable type', function () {
+    $sample = new Sample();
+    (Property::create($sample, 'nullableString'))->set(null);
 
-    /** @test */
-    public function itIsAbleToSetANewProperty()
-    {
-        $sample   = new Sample();
-        $property = Property::create($sample, 'newProperty');
+    expect($sample)->nullableString()->toBeNull();
+});
 
-        $property->set('value');
+it('does not set value if types do not match', function () {
+    $sample = new Sample();
+    (Property::create($sample, 'nullableString'))->set(10);
 
-        $this->assertEquals('value', $sample->newProperty);
-    }
-}
+    expect($sample)->nullableString()->not->toEqual(10);
+});
+
+it('does set value if property has union type and value matches one of those types', function () {
+    $sample = new Sample();
+    (Property::create($sample, 'unionTypeProperty'))->set(20);
+
+    expect($sample)->unionTypeProperty()->toEqual(20);
+});
+
+it('does not set value if union types do not match', function () {
+    $sample = new Sample();
+    (Property::create($sample, 'unionTypeProperty'))->set([]);
+
+    expect($sample)->unionTypeProperty()->not->toEqual([]);
+});
+
+it('sets value to null if null is passed and property has nullable union types', function () {
+    $sample = new Sample();
+    (Property::create($sample, 'nullableUnionTypeProperty'))->set(null);
+
+    expect($sample)->nullableUnionTypeProperty()->toBeNull();
+});

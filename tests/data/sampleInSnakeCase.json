@@ -1,5 +1,6 @@
 {
   "public_property": "value 1",
   "protected_property": "value 2",
-  "private_property": "value 3"
+  "private_property": "value 3",
+  "non-existing": "value 4"
 }

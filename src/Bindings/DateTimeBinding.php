@@ -3,55 +3,35 @@
 namespace Karriere\JsonDecoder\Bindings;
 
 use DateTime;
+use DateTimeInterface;
 use Karriere\JsonDecoder\Binding;
 use Karriere\JsonDecoder\JsonDecoder;
 use Karriere\JsonDecoder\Property;
 
 class DateTimeBinding extends Binding
 {
-    /**
-     * @var string
-     */
-    private $format;
-
-    /**
-     * DateTimeBinding constructor.
-     *
-     * @param string $property       the property to bind to
-     * @param string $jsonField      the json field
-     * @param bool   $isRequired     defines if the field value is required during decoding
-     * @param string $dateTimeFormat defines the date format used for parsing, defaults to DateTime::ATOM
-     */
     public function __construct(
         string $property,
-        string $jsonField,
+        ?string $jsonField = null,
         bool $isRequired = false,
-        string $dateTimeFormat = DateTime::ATOM
+        private string $dateTimeFormat = DateTimeInterface::ATOM
     ) {
-        parent::__construct($property, $jsonField, null, $isRequired);
-
-        $this->format = $dateTimeFormat;
+        parent::__construct(property: $property, jsonField: $jsonField, isRequired: $isRequired);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function validate(array $jsonData): bool
     {
-        if (array_key_exists($this->jsonField, $jsonData) && !empty($jsonData[$this->jsonField])) {
-            return DateTime::createFromFormat($this->format, $jsonData[$this->jsonField]) !== false;
+        if ($this->jsonField && array_key_exists($this->jsonField, $jsonData) && ! empty($jsonData[$this->jsonField])) {
+            return DateTime::createFromFormat($this->dateTimeFormat, $jsonData[$this->jsonField]) !== false;
         }
 
-        return !$this->isRequired;
+        return ! $this->isRequired;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function bind(JsonDecoder $jsonDecoder, ?array $jsonData, Property $property)
+    public function bind(JsonDecoder $jsonDecoder, Property $property, array $jsonData = []): void
     {
-        if (array_key_exists($this->jsonField, $jsonData)) {
-            $dateTimeObject = DateTime::createFromFormat($this->format, $jsonData[$this->jsonField]);
+        if ($this->jsonField && array_key_exists($this->jsonField, $jsonData)) {
+            $dateTimeObject = DateTime::createFromFormat($this->dateTimeFormat, $jsonData[$this->jsonField]);
 
             if ($dateTimeObject !== false) {
                 $property->set($dateTimeObject);

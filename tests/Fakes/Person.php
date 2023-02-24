@@ -2,14 +2,13 @@
 
 namespace Karriere\JsonDecoder\Tests\Fakes;
 
+use AllowDynamicProperties;
 use DateTime;
 
+#[AllowDynamicProperties]
 class Person
 {
-    /**
-     * @var string
-     */
-    private $firstname;
+    private ?string $firstname = null;
 
     /**
      * @var string
@@ -20,6 +19,10 @@ class Person
      * @var Address
      */
     private $address;
+
+    private ?Address $typedAddress = null;
+
+    private Address|string|null $unionType = null;
 
     /**
      * @var DateTime
@@ -41,8 +44,18 @@ class Person
         return $this->address;
     }
 
+    public function typedAddress(): ?Address
+    {
+        return $this->typedAddress;
+    }
+
     public function birthday()
     {
         return $this->birthday;
+    }
+
+    public function unionType(): Address|string|null
+    {
+        return $this->unionType;
     }
 }

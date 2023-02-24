@@ -8,24 +8,14 @@ use Karriere\JsonDecoder\Property;
 
 class AliasBinding extends Binding
 {
-    /**
-     * AliasBinding constructor.
-     *
-     * @param string $property   the property to bind to
-     * @param string $jsonField  the json field
-     * @param bool   $isRequired defines if the field value is required during decoding
-     */
     public function __construct(string $property, string $jsonField, bool $isRequired = false)
     {
-        parent::__construct($property, $jsonField, null, $isRequired);
+        parent::__construct(property: $property, jsonField: $jsonField, isRequired: $isRequired);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function bind(JsonDecoder $jsonDecoder, ?array $jsonData, Property $property)
+    public function bind(JsonDecoder $jsonDecoder, Property $property, array $jsonData = []): void
     {
-        if (array_key_exists($this->jsonField, $jsonData)) {
+        if ($this->jsonField && array_key_exists($this->jsonField, $jsonData)) {
             $property->set($jsonData[$this->jsonField]);
         }
     }

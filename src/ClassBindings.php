@@ -6,57 +6,49 @@ use Exception;
 use Karriere\JsonDecoder\Bindings\AliasBinding;
 use Karriere\JsonDecoder\Bindings\CallbackBinding;
 use Karriere\JsonDecoder\Bindings\RawBinding;
-use Karriere\JsonDecoder\Exceptions\InvalidBindingException;
 use Karriere\JsonDecoder\Exceptions\JsonValueException;
+use ReflectionException;
 use ReflectionProperty;
 
 class ClassBindings
 {
     /**
-     * @var array
+     * @var array<string, Binding>
      */
-    private $bindings = [];
+    private array $bindings = [];
 
     /**
-     * @var array
+     * @var array<string, CallbackBinding>
      */
-    private $callbackBindings = [];
+    private array $callbackBindings = [];
 
-    /**
-     * @var JsonDecoder
-     */
-    private $jsonDecoder;
-
-    public function __construct(JsonDecoder $jsonDecoder)
+    public function __construct(private JsonDecoder $jsonDecoder)
     {
-        $this->jsonDecoder = $jsonDecoder;
     }
 
     /**
      * decodes all available json fields into the given class instance.
      *
-     * @param mixed $instance
-     *
-     * @return mixed
-     *
      * @throws JsonValueException
+     * @throws ReflectionException
      */
-    public function decode(array $data, $instance)
+    public function decode(array $data, object $instance): mixed
     {
         $jsonFieldNames = array_keys($data);
 
         foreach ($jsonFieldNames as $fieldName) {
             if ($this->hasBinding($fieldName)) {
-                $binding  = $this->bindings[$fieldName];
+                $binding = $this->bindings[$fieldName];
                 $property = Property::create($instance, $this->bindings[$fieldName]->property());
                 $this->handleBinding($binding, $property, $data);
-            } elseif (!$this->hasCallbackBinding($fieldName)) { // callback bindings are handled below
+            } elseif (! $this->hasCallbackBinding($fieldName)) { // callback bindings are handled below
                 if ($this->jsonDecoder->shouldAutoCase()) {
                     $property = $this->autoCase($fieldName, $instance);
 
-                    if (!is_null($property)) {
+                    if (! is_null($property)) {
                         $binding = new AliasBinding($property->getName(), $fieldName);
-                        $binding->bind($this->jsonDecoder, $data, $property);
+                        $binding->bind($this->jsonDecoder, $property, $data);
+
                         continue;
                     }
                 }
@@ -74,30 +66,16 @@ class ClassBindings
         return $instance;
     }
 
-    /**
-     * @param Binding $binding
-     *
-     * @throws InvalidBindingException
-     */
-    public function register($binding)
+    public function register(Binding $binding): void
     {
-        if (!$binding instanceof Binding) {
-            throw new InvalidBindingException();
-        } elseif ($binding instanceof CallbackBinding) {
+        if ($binding instanceof CallbackBinding) {
             $this->callbackBindings[$binding->property()] = $binding;
         } else {
             $this->bindings[$binding->jsonField()] = $binding;
         }
     }
 
-    /**
-     * checks for a binding for the given property.
-     *
-     * @param string $property
-     *
-     * @return bool
-     */
-    public function hasBinding($property)
+    public function hasBinding(string $property): bool
     {
         return array_key_exists($property, $this->bindings);
     }
@@ -108,45 +86,29 @@ class ClassBindings
     }
 
     /**
-     * validates and executes the found binding on the given property.
-     *
-     * @param Binding  $binding  the binding to execute
-     * @param Property $property the property the binding is executed on
-     * @param mixed    $data     the actual json array data
-     *
-     * @return void
-     *
-     * @throws JsonValueException if the binding validation fails
+     * @throws JsonValueException
      */
-    private function handleBinding(Binding $binding, Property $property, $data)
+    private function handleBinding(Binding $binding, Property $property, array $data): void
     {
-        if (!$binding->validate($data)) {
+        if (! $binding->validate($data)) {
             throw new JsonValueException($property->getName());
         }
 
-        $binding->bind($this->jsonDecoder, $data, $property);
+        $binding->bind($this->jsonDecoder, $property, $data);
     }
 
     /**
      * builds a raw binding and executes it on the given property.
-     *
-     * @param Property $property the property to execute the binding on
-     * @param mixed    $data     the actual json array data
-     *
-     * @return void
      */
-    private function handleRaw(Property $property, $data)
+    private function handleRaw(Property $property, array $data): void
     {
-        (new RawBinding($property->getName()))->bind($this->jsonDecoder, $data, $property);
+        (new RawBinding($property->getName()))->bind($this->jsonDecoder, $property, $data);
     }
 
     /**
      * creates the property variants and checks if one of them is an actual property of the instance.
-     *
-     * @param string $jsonField the json field name used for creating the variants
-     * @param mixed  $instance  the class instance
      */
-    private function autoCase(string $jsonField, $instance): ?Property
+    private function autoCase(string $jsonField, object $instance): ?Property
     {
         $variants = array_filter(
             [
@@ -163,7 +125,7 @@ class ClassBindings
                 new ReflectionProperty($instance, $variant);
 
                 return Property::create($instance, $variant);
-            } catch (Exception $ignored) {
+            } catch (Exception) {
             }
         }
 
@@ -172,30 +134,20 @@ class ClassBindings
 
     /**
      * converts the given snake case input to camel case.
-     *
-     * @param string $input snake case input
-     *
-     * @return string
      */
-    private function snakeToCamelCase(string $input)
+    private function snakeToCamelCase(string $input): string
     {
-        $fn = function ($c) {
-            return strtoupper($c[1]);
-        };
+        $result = preg_replace_callback('/_([a-z])/', fn ($c) => strtoupper($c[1]), strtolower($input));
 
-        return preg_replace_callback('/_([a-z])/', $fn, strtolower($input));
+        return $result ?: $input;
     }
 
     /**
      * converts the given kebap case input to camel case.
-     *
-     * @param string $input kebap case input
-     *
-     * @return string
      */
-    private function kebapToCamelCase(string $input)
+    private function kebapToCamelCase(string $input): string
     {
-        $output    = str_replace('-', '', ucwords($input, '-'));
+        $output = str_replace('-', '', ucwords($input, '-'));
         $output[0] = strtolower($output[0]);
 
         return $output;

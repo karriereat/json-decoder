@@ -1,99 +1,56 @@
 <?php
 
-namespace Karriere\JsonDecoder\Tests;
-
-use Karriere\JsonDecoder\Binding;
 use Karriere\JsonDecoder\Bindings\CallbackBinding;
 use Karriere\JsonDecoder\Bindings\FieldBinding;
 use Karriere\JsonDecoder\ClassBindings;
-use Karriere\JsonDecoder\Exceptions\InvalidBindingException;
 use Karriere\JsonDecoder\Exceptions\JsonValueException;
 use Karriere\JsonDecoder\JsonDecoder;
 use Karriere\JsonDecoder\Tests\Fakes\Person;
-use PHPUnit\Framework\TestCase;
+use Karriere\JsonDecoder\Tests\Fakes\ValidationFailBinding;
 
-class ClassBindingsTest extends TestCase
-{
-    /** @test */
-    public function itRegistersABinding()
-    {
-        $classBindings = new ClassBindings(new JsonDecoder());
+beforeEach(function () {
+    $this->classBindings = new ClassBindings(new JsonDecoder());
+});
 
-        $this->assertFalse($classBindings->hasBinding('field'));
+it('registers a field binding', function () {
+    expect($this->classBindings)->hasBinding('field')->toBeFalse();
 
-        $classBindings->register(new FieldBinding('field', 'field', Person::class));
+    $this->classBindings->register(new FieldBinding('field', 'field', Person::class));
 
-        $this->assertTrue($classBindings->hasBinding('field'));
-    }
+    expect($this->classBindings)->hasBinding('field')->toBeTrue();
+});
 
-    /** @test */
-    public function itRegistersACallbackBinding()
-    {
-        $classBindings = new ClassBindings(new JsonDecoder());
+it('registers a callback binding', function () {
+    expect($this->classBindings)->hasBinding('field')->toBeFalse();
+    expect($this->classBindings)->hasCallbackBinding('field')->toBeFalse();
 
-        $this->assertFalse($classBindings->hasBinding('field'));
-        $this->assertFalse($classBindings->hasCallbackBinding('field'));
+    $this->classBindings->register(new CallbackBinding('field', function (): void {
+    }));
 
-        $classBindings->register(new CallbackBinding('field', function () {}));
+    expect($this->classBindings)->hasBinding('field')->toBeFalse();
+    expect($this->classBindings)->hasCallbackBinding('field')->toBeTrue();
+});
 
-        $this->assertFalse($classBindings->hasBinding('field'));
-        $this->assertTrue($classBindings->hasCallbackBinding('field'));
-    }
+it('throws exception if binding validation fails', function () {
+    $this->classBindings->register(new ValidationFailBinding('firstname', 'firstname'));
 
-    /** @test */
-    public function itFailsToRegisterANotCompatibleBindingClass()
-    {
-        $classBindings = new ClassBindings(new JsonDecoder());
+    $this->classBindings->decode(['firstname' => 'John'], new Person());
+})->throws(JsonValueException::class);
 
-        $this->expectException(InvalidBindingException::class);
+it('executes callback bindings when property name is contained in json fields', function () {
+    $this->classBindings->register(
+        new CallbackBinding('firstname', fn (array $data): string => $data['firstname'] . ' Doe')
+    );
 
-        $classBindings->register(new Person());
-    }
+    expect($this->classBindings->decode(['firstname' => 'John'], new Person()))
+        ->firstname()->toEqual('John Doe');
+});
 
-    /** @test */
-    public function itThrowsAnExceptionIfBindingValidationFails()
-    {
-        $classBindings = new ClassBindings(new JsonDecoder());
+it('executes callback bindings when property name is not contained in json fields', function () {
+    $this->classBindings->register(
+        new CallbackBinding('foo', fn (array $data): string => 'bar')
+    );
 
-        $classBindings->register(new class('firstname', 'firstname', 'type') extends Binding {
-            public function validate($jsonData): bool
-            {
-                return false;
-            }
-
-            public function bind($jsonDecoder, $jsonData, $property)
-            {
-            }
-        });
-
-        $this->expectException(JsonValueException::class);
-
-        $classBindings->decode(['firstname' => 'John'], new Person());
-    }
-
-    /** @test */
-    public function itExecutesCallbackBindingsWhenPropertyNameIsContainedInJsonFields()
-    {
-        $classBindings = new ClassBindings(new JsonDecoder());
-        $classBindings->register(new CallbackBinding('firstname', function ($data) {
-            return $data['firstname'] . ' Doe';
-        }));
-
-        $person = $classBindings->decode(['firstname' => 'John'], new Person());
-
-        $this->assertEquals('John Doe', $person->firstname());
-    }
-
-    /** @test */
-    public function itExecutesCallbackBindingsWhenPropertyNameIsNotContainedInJsonFields()
-    {
-        $classBindings = new ClassBindings(new JsonDecoder());
-        $classBindings->register(new CallbackBinding('somePropertyName', function () {
-            return 'yes';
-        }));
-
-        $person = $classBindings->decode(['firstname' => 'John'], new Person());
-
-        $this->assertEquals('yes', $person->somePropertyName);
-    }
-}
+    expect($this->classBindings->decode(['firstname' => 'John'], new Person()))
+        ->foo->toEqual('bar');
+});

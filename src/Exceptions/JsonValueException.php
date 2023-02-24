@@ -6,7 +6,7 @@ use Exception;
 
 class JsonValueException extends Exception
 {
-    public function __construct($propertyName)
+    public function __construct(string $propertyName)
     {
         parent::__construct(
             sprintf(

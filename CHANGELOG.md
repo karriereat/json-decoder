@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.0.0] - 2023-03-01
+### Added
+- Support for PHP 8.2.
+- Support for typed properties (in addition to the annotated properties)
+- [BREAKING] Type hints and return types
+
+### Changed
+- [BREAKING] Constructor order of `Bindings`
+- [BREAKING] Argument order of `transform` and `transferRaw` in `JsonDecoder`
+- Set dynamic properties only if `AllowDynamicProperties` attribute is set (on PHP 8.2. and greater)
+- Linting to `pint`
+- Unit tests to `pest`
+
+### Removed
+- Support for PHP 7.4.
+
 ## [4.2.0] - 2022-11-11
 ### Added
 - Support for using array-keys in `ArrayBinding` (#52, #55)

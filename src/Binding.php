@@ -4,40 +4,12 @@ namespace Karriere\JsonDecoder;
 
 abstract class Binding
 {
-    /**
-     * @var string
-     */
-    protected $property;
-
-    /**
-     * @var ?string
-     */
-    protected $jsonField;
-
-    /**
-     * @var ?string
-     */
-    protected $type;
-
-    /**
-     * @var bool
-     */
-    protected $isRequired;
-
-    /**
-     * FieldBinding constructor.
-     *
-     * @param string  $property   the property to bind to
-     * @param ?string $jsonField  the json field
-     * @param ?string $type       the desired type of the property
-     * @param bool    $isRequired defines if the field value is required during decoding
-     */
-    public function __construct($property, $jsonField, $type, $isRequired = false)
-    {
-        $this->property   = $property;
-        $this->jsonField  = $jsonField;
-        $this->type       = $type;
-        $this->isRequired = $isRequired;
+    public function __construct(
+        protected string $property,
+        protected ?string $jsonField = null,
+        protected ?string $type = null,
+        protected bool $isRequired = false,
+    ) {
     }
 
     /**
@@ -45,7 +17,7 @@ abstract class Binding
      */
     public function validate(array $jsonData): bool
     {
-        return !$this->isRequired || array_key_exists($this->jsonField, $jsonData);
+        return ! $this->isRequired || ($this->jsonField && array_key_exists($this->jsonField, $jsonData));
     }
 
     /**
@@ -66,11 +38,6 @@ abstract class Binding
 
     /**
      * executes the defined binding method on the class instance.
-     *
-     * @param ?array   $jsonData
-     * @param Property $property the class instance to bind to
-     *
-     * @return mixed
      */
-    abstract public function bind(JsonDecoder $jsonDecoder, ?array $jsonData, Property $property);
+    abstract public function bind(JsonDecoder $jsonDecoder, Property $property, array $jsonData = []): void;
 }

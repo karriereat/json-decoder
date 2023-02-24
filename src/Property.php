@@ -2,78 +2,118 @@
 
 namespace Karriere\JsonDecoder;
 
-use Exception;
+use AllowDynamicProperties;
+use ReflectionClass;
+use ReflectionException;
+use ReflectionNamedType;
 use ReflectionProperty;
+use ReflectionType;
+use ReflectionUnionType;
 
+#[AllowDynamicProperties]
 class Property
 {
-    /**
-     * @var mixed
-     */
-    private $instance;
+    private function __construct(
+        private object $instance,
+        private string $propertyName,
+        private ?ReflectionProperty $property = null,
+    ) {
+    }
 
-    /**
-     * @var string
-     */
-    private $propertyName;
-
-    /**
-     * @var ?ReflectionProperty
-     */
-    private $property;
-
-    /**
-     * creates the property instance.
-     *
-     * @param mixed  $instance     the class instance the property lives in
-     * @param string $propertyName the name of the property
-     *
-     * @return self
-     */
-    public static function create($instance, string $propertyName)
+    public static function create(object $instance, string $propertyName): self
     {
         $property = null;
+
         try {
             $property = new ReflectionProperty($instance, $propertyName);
             $property->setAccessible(true);
-        } catch (Exception $ignored) {
+        } catch (ReflectionException) {
         }
 
         return new self($instance, $propertyName, $property);
     }
 
-    private function __construct($instance, string $propertyName, ReflectionProperty $property = null)
-    {
-        $this->instance     = $instance;
-        $this->propertyName = $propertyName;
-        $this->property     = $property;
-    }
-
-    /**
-     * sets the value to the property.
-     *
-     * @param mixed $value
-     *
-     * @return void
-     */
-    public function set($value)
+    public function set(mixed $value): void
     {
         if (is_null($this->property)) {
-            $this->instance->{$this->propertyName} = $value;
+            if ($this->dynamicPropertiesAllowed()) {
+                $this->instance->{$this->propertyName} = $value;
+            }
         } else {
-            $property = new ReflectionProperty(get_class($this->instance), $this->propertyName);
-            $property->setAccessible(true);
-            $property->setValue($this->instance, $value);
+            try {
+                $property = new ReflectionProperty(get_class($this->instance), $this->propertyName);
+
+                if ($this->valueHasCorrectType($property, $value)) {
+                    $property->setAccessible(true);
+                    $property->setValue($this->instance, $value);
+                }
+            } catch (ReflectionException) {
+            }
         }
     }
 
-    /**
-     * gets the name ot the property.
-     *
-     * @return string
-     */
-    public function getName()
+    private function dynamicPropertiesAllowed(): bool
+    {
+        if (version_compare(PHP_VERSION, '8.2.0', '<')) {
+            return true;
+        }
+
+        $classAttributes = (new ReflectionClass($this->instance))->getAttributes();
+
+        foreach ($classAttributes as $attribute) {
+            if ($attribute->getName() === 'AllowDynamicProperties') {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function getName(): string
     {
         return $this->propertyName;
+    }
+
+    private function valueHasCorrectType(ReflectionProperty $property, mixed $value): bool
+    {
+        if (! $property->hasType()) {
+            return true;
+        }
+
+        if ($this->setToNullIfAllowed($property->getType(), $value)) {
+            return true;
+        }
+
+        if ($this->typesMatch($property->getType(), $value)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private function setToNullIfAllowed(?ReflectionType $type, mixed $value): bool
+    {
+        return $type?->allowsNull() && is_null($value);
+    }
+
+    private function typesMatch(?ReflectionType $reflectionType, mixed $value): bool
+    {
+        $valueType = is_object($value) ? get_class($value) : get_debug_type($value);
+
+        if ($reflectionType instanceof ReflectionNamedType) {
+            if ($reflectionType->getName() === $valueType) {
+                return true;
+            }
+        }
+
+        if ($reflectionType instanceof ReflectionUnionType) {
+            foreach ($reflectionType->getTypes() as $type) {
+                if ($type->getName() === $valueType) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }
