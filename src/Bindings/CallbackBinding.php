@@ -9,32 +9,17 @@ use Karriere\JsonDecoder\Property;
 
 class CallbackBinding extends Binding
 {
-    /**
-     * @var Closure
-     */
-    private $callback;
-
-    /**
-     * CallbackBinding constructor.
-     */
-    public function __construct(string $property, Closure $callback)
+    public function __construct(string $property, private Closure $callback)
     {
-        parent::__construct($property, null, null, false);
-        $this->callback = $callback;
+        parent::__construct($property);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function validate(array $jsonData): bool
     {
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function bind(JsonDecoder $jsonDecoder, ?array $jsonData, Property $property)
+    public function bind(JsonDecoder $jsonDecoder, Property $property, array $jsonData = []): void
     {
         $property->set($this->callback->__invoke($jsonData, $jsonDecoder));
     }

@@ -7,10 +7,10 @@ interface Transformer
     /**
      * register field, array, alias and callback bindings.
      */
-    public function register(ClassBindings $classBindings);
+    public function register(ClassBindings $classBindings): void;
 
     /**
-     * @return string the full qualified class name that the transformer transforms
+     * @return class-string the full qualified class name that the transformer transforms
      */
-    public function transforms();
+    public function transforms(): string;
 }

@@ -5,8 +5,8 @@
     "license": "Apache-2.0",
     "authors": [
         {
-            "name": "Johannes Pichler",
-            "email": "johannes.pichler@karriere.at",
+            "name": "Alexander Lentner",
+            "email": "alexander.lentner@karriere.at",
             "role": "Maintainer"
         }
     ],
@@ -21,19 +21,28 @@
         }
     },
     "require": {
-        "php": "^7.3 | ^8.0",
+        "php": "8.0.* | 8.1.* | 8.2.*",
         "php-di/phpdoc-reader": "^2.1"
     },
     "require-dev": {
-        "phpunit/phpunit": "^8.0 || ^9.0",
-        "friendsofphp/php-cs-fixer": "^3.4",
-        "phpstan/phpstan": "^1.2"
+        "laravel/pint": "^1.5 | ^1.6",
+        "pestphp/pest": "^1.22",
+        "phpstan/phpstan": "^1.10"
     },
     "scripts": {
-        "test": "phpunit",
-        "coverage": "phpunit --coverage-clover coverage.xml",
-        "lint": "php-cs-fixer fix -v --dry-run",
-        "fix": "php-cs-fixer fix -v",
-        "analyse": "phpstan analyse src --level 5"
+        "analyse": "phpstan analyse --memory-limit 512M",
+        "lint": "pint --test",
+        "lint:verbose": "pint -v --test",
+        "fix": "pint",
+        "test": "vendor/bin/pest",
+        "coverage": "vendor/bin/pest --coverage --ci --coverage-html coverage --coverage-clover coverage.xml --log-junit junit.xml",
+        "report": "vendor/bin/pest --coverage",
+        "report:html": "vendor/bin/pest --coverage --coverage-html coverage"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
     }
 }

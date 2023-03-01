@@ -1,7 +1,7 @@
 <a href="https://www.karriere.at/" target="_blank"><img width="200" src="https://raw.githubusercontent.com/karriereat/.github/main/profile/logo.svg"></a>
 <span>&nbsp;&nbsp;&nbsp;</span>
-![](https://github.com/karriereat/json-decoder/workflows/test/badge.svg)
-![](https://github.com/karriereat/json-decoder/workflows/lint/badge.svg)
+![](https://github.com/karriereat/json-decoder/workflows/CI/badge.svg)
+[![Packagist Downloads](https://img.shields.io/packagist/dt/karriere/json-decoder.svg?style=flat-square)](https://packagist.org/packages/karriere/json-decoder)
 
 # JsonDecoder for PHP
 
@@ -19,7 +19,7 @@ composer require karriere/json-decoder
 
 By default the Decoder will iterate over all JSON fields defined and will try to set this values on the given class type instance. This change in behavior allows the use of `json-decoder` on classes that use the **magic** `__get` and `__set` functions like Laravel's Eloquent models.
 
-If a property equally named like the JSON field is found or a explicit `Binding` is defined for the JSON field it will be decoded into the defined place. Otherwise the property will just be created and assigned.
+If a property equally named like the JSON field is found or a explicit `Binding` is defined for the JSON field it will be decoded into the defined place. Otherwise the property will just be created and assigned (you need the `#[AllowDynamicProperties]` attribute if you are on PHP 8.2.).
 
 The `JsonDecoder` class can receive one parameter called `shouldAutoCase`. If set to true it will try to find the camel-case version from either snake-case or kebap-case automatically if no other binding was registered for the field and it will use an `AliasBinding` if one of the variants can be found.
 
@@ -28,10 +28,12 @@ The `JsonDecoder` class can receive one parameter called `shouldAutoCase`. If se
 Assume you have a class `Person` that looks like this:
 
 ```php
+#[AllowDynamicProperties]
 class Person
 {
-    public $id;
-    public $name;
+    public int $id;
+    public string $name;
+    public ?string $lastname = '';
 }
 ```
 
@@ -39,25 +41,34 @@ The following code will transform the given JSON data into an instance of `Perso
 
 ```php
 $jsonDecoder = new JsonDecoder();
-$jsonData = '{"id": 1, "name": "John Doe"}';
+$jsonData = '{"id": 1, "name": "John Doe", "lastname": null, "dynamicProperty": "foo"}';
 
 $person = $jsonDecoder->decode($jsonData, Person::class);
 ```
 
+Please be aware that since PHP 8.2. dynamic properties are deprecated. So if you still wish to have the ability to make
+use of those dynamic properties you have to add the PHP attribute `AllowDynamicProperties` to your class.
+If you are using PHP 8.2. (and greater) and don't use the `AllowDynamicProperties` attribute all dynamic properties will
+be ignored.
+
 ### More complex use case
 
-Let's extend the previous example with a property called address. This address field should contain an instance of `Address`. In the prior versions of `json-decoder` it was necessary to define a custom `Transformer` to be able to handle this situation. As of version 4 you can use the introduced method `scanAndRegister` to automatically generate the transformer based on class annotations.
+Let's extend the previous example with a property called address. This address field should contain an instance of `Address`.
+As of version 4 you can use the introduced method `scanAndRegister` to automatically generate the transformer based on class annotations.
+Since version 5 you can also make use of the property type instead of a class annotation.
 
 ```php
 class Person
 {
-    public $id;
-    public $name;
+    public int $id;
+    public string $name;
 
     /**
      * @var Address
      */
     public $address;
+    
+    public ?Address $typedAddress = null;
 }
 ```
 
@@ -67,7 +78,7 @@ For this class definition we can decode JSON data as follows:
 $jsonDecoder = new JsonDecoder();
 $jsonDecoder->scanAndRegister(Person::class);
 
-$jsonData = '{"id": 1, "name": "John Doe", "address": {"street": "Samplestreet", "city": "Samplecity"}}';
+$jsonData = '{"id": 1, "name": "John Doe", "address": {"street": "Samplestreet", "city": "Samplecity"}, , "typedAddress": {"street": "Samplestreet", "city": "Samplecity"}}';
 
 $person = $jsonDecoder->decode($jsonData, Person::class);
 ```
@@ -79,9 +90,9 @@ If you don't use annotations or need a more flexible `Transformer` you can also 
 ```php
 class Person
 {
-    public $id;
-    public $name;
-    public $address;
+    public int $id;
+    public string $name;
+    public mixed $address;
 }
 ```
 
@@ -153,19 +164,19 @@ Defines a JSON field to property binding for the given type.
 **Signature:**
 
 ```php
-new FieldBinding($property, $jsonField, $type);
+new FieldBinding(string $property, ?string $jsonField = null, ?string $type = null, bool $isRequired = false);
 ```
 
 This defines a field mapping for the property `$property` to a class instance of type `$type` with data in `$jsonField`.
 
 #### ArrayBinding
 
-Defines a array field binding for the given type.
+Defines an array field binding for the given type.
 
 **Signature:**
 
 ```php
-new ArrayBinding($property, $jsonField, $type);
+new ArrayBinding(string $property, ?string $jsonField = null, ?string $type = null, bool $isRequired = false);
 ```
 
 This defines a field mapping for the property `$property` to an array of class instance of type `$type` with data in `$jsonField`.
@@ -177,7 +188,7 @@ Defines a JSON field to property binding.
 **Signature:**
 
 ```php
-new AliasBinding($property, $jsonField);
+new AliasBinding(string $property, ?string $jsonField = null, bool $isRequired = false);
 ```
 
 #### DateTimeBinding
@@ -187,7 +198,7 @@ Defines a JSON field to property binding and converts the given string to a `Dat
 **Signature:**
 
 ```php
-new new DateTimeBinding($property, $jsonField, $isRequired = false, $dateTimeFormat = DateTime::ATOM);
+new DateTimeBinding(string $property, ?string $jsonField = null, bool $isRequired = false, $dateTimeFormat = DateTime::ATOM);
 ```
 
 #### CallbackBinding
@@ -197,7 +208,7 @@ Defines a property binding that gets the callback result set as its value.
 **Signature:**
 
 ```php
-new CallbackBinding($property, $callback);
+new CallbackBinding(string $property, private Closure $callback);
 ```
 
 ## License

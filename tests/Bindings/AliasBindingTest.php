@@ -1,37 +1,27 @@
 <?php
 
-namespace Karriere\JsonDecoder\Tests\Bindings;
-
 use Karriere\JsonDecoder\Bindings\AliasBinding;
 use Karriere\JsonDecoder\JsonDecoder;
 use Karriere\JsonDecoder\Property;
 use Karriere\JsonDecoder\Tests\Fakes\Person;
-use PHPUnit\Framework\TestCase;
 
-class AliasBindingTest extends TestCase
-{
-    /** @test */
-    public function itAliasesAField()
-    {
-        $binding  = new AliasBinding('firstname', 'first-name');
-        $person   = new Person();
-        $property = Property::create($person, 'firstname');
+beforeEach(function () {
+    $this->person = new Person();
+    $this->property = Property::create($this->person, 'firstname');
+});
 
-        $binding->bind(new JsonDecoder(), ['first-name' => 'John'], $property);
+it('aliases a field', function () {
+    (new AliasBinding('firstname', 'first-name'))
+        ->bind(new JsonDecoder(), $this->property, ['first-name' => 'John']);
 
-        $this->assertEquals('John', $person->firstname());
-    }
+    expect($this->person)->firstname()->toEqual('John');
+});
 
-    /** @test */
-    public function itSkipsANotAvailableField()
-    {
-        $binding  = new AliasBinding('lastname', 'lastname');
-        $person   = new Person();
-        $property = Property::create($person, 'firstname');
+it('skips a not available field', function () {
+    (new AliasBinding('lastname', 'lastname'))
+        ->bind(new JsonDecoder(), $this->property, ['first-name' => 'John']);
 
-        $binding->bind(new JsonDecoder(), ['first-name' => 'John'], $property);
-
-        $this->assertNull($person->firstname());
-        $this->assertNull($person->lastname());
-    }
-}
+    expect($this->person)
+        ->firstname()->toBeNull()
+        ->lastname()->toBeNull();
+});

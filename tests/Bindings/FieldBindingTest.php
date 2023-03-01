@@ -1,40 +1,32 @@
 <?php
 
-namespace Karriere\JsonDecoder\Tests\Bindings;
-
 use Karriere\JsonDecoder\Bindings\FieldBinding;
 use Karriere\JsonDecoder\JsonDecoder;
 use Karriere\JsonDecoder\Property;
 use Karriere\JsonDecoder\Tests\Fakes\Address;
 use Karriere\JsonDecoder\Tests\Fakes\Person;
-use PHPUnit\Framework\TestCase;
 
-class FieldBindingTest extends TestCase
-{
-    /** @test */
-    public function itBindsAFieldToAClassInstance()
-    {
-        $binding  = new FieldBinding('address', 'address', Address::class);
-        $person   = new Person();
-        $property = Property::create($person, 'address');
-        $jsonData = json_decode(file_get_contents(__DIR__ . '/../data/personWithAddress.json'), true);
+beforeEach(function () {
+    $this->binding = new FieldBinding('address', 'address', Address::class);
+    $this->person = new Person();
+    $this->property = Property::create($this->person, 'address');
+});
 
-        $binding->bind(new JsonDecoder(), $jsonData, $property);
+it('binds a field to a class instance', function () {
+    $this->binding->bind(
+        new JsonDecoder(),
+        $this->property,
+        json_decode(file_get_contents(__DIR__ . '/../data/personWithAddress.json'), true),
+    );
 
-        $this->assertInstanceOf(Address::class, $person->address());
-        $this->assertEquals('Street', $person->address()->street());
-        $this->assertEquals('City', $person->address()->city());
-    }
+    expect($this->person->address())
+        ->toBeInstanceOf(Address::class)
+        ->street()->toEqual('Street')
+        ->city()->toEqual('City');
+});
 
-    /** @test */
-    public function itIgnoresANotDefinedField()
-    {
-        $binding  = new FieldBinding('address', 'address', Address::class);
-        $person   = new Person();
-        $property = Property::create($person, 'address');
+it('ignores a not defined field', function () {
+    $this->binding->bind(new JsonDecoder(), $this->property);
 
-        $binding->bind(new JsonDecoder(), [], $property);
-
-        $this->assertNull($person->address());
-    }
-}
+    expect($this->person)->address()->toBeNull();
+});

@@ -1,44 +1,28 @@
 <?php
 
-namespace Karriere\JsonDecoder\Tests\Bindings;
-
 use Karriere\JsonDecoder\Bindings\RawBinding;
 use Karriere\JsonDecoder\JsonDecoder;
 use Karriere\JsonDecoder\Property;
 use Karriere\JsonDecoder\Tests\Fakes\Person;
-use PHPUnit\Framework\TestCase;
 
-class RawBindingTest extends TestCase
-{
-    /** @test */
-    public function itSetsARawValue()
-    {
-        $binding  = new RawBinding('firstname');
-        $person   = new Person();
-        $property = Property::create($person, 'firstname');
+beforeEach(function () {
+    $this->binding = new RawBinding('firstname');
+    $this->person = new Person();
+    $this->property = Property::create($this->person, 'firstname');
+});
 
-        $binding->bind(new JsonDecoder(), ['firstname' => 'John'], $property);
+it('sets a raw binding', function () {
+    $this->binding->bind(new JsonDecoder(), $this->property, ['firstname' => 'John']);
 
-        $this->assertEquals('John', $person->firstname());
-    }
+    expect($this->person)->firstname()->toEqual('John');
+});
 
-    /** @test */
-    public function itIgnoresANotExistingProperty()
-    {
-        $binding  = new RawBinding('firstname');
-        $person   = new Person();
-        $property = Property::create($person, 'firstname');
+it('ignores a not existing property', function () {
+    $this->binding->bind(new JsonDecoder(), $this->property);
 
-        $binding->bind(new JsonDecoder(), [], $property);
+    expect($this->person)->firstname()->toBeNull();
+});
 
-        $this->assertNull($person->firstname());
-    }
-
-    /** @test */
-    public function itAlwaysValidatesToTrue()
-    {
-        $binding = new RawBinding('firstname');
-
-        $this->assertTrue($binding->validate([]));
-    }
-}
+it('always validates to true', function () {
+    expect($this->binding)->validate([])->toBeTrue();
+});

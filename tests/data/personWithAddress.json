@@ -1,7 +1,16 @@
 {
   "firstname": "John",
   "lastname": "Doe",
+  "foo": "bar",
   "address": {
+    "street": "Street",
+    "city": "City"
+  },
+  "typedAddress": {
+    "street": "Street",
+    "city": "City"
+  },
+  "unionType": {
     "street": "Street",
     "city": "City"
   },

@@ -1,85 +1,81 @@
 <?php
 
-namespace Karriere\JsonDecoder\Tests\Bindings;
-
 use Karriere\JsonDecoder\Bindings\ArrayBinding;
 use Karriere\JsonDecoder\JsonDecoder;
 use Karriere\JsonDecoder\Property;
 use Karriere\JsonDecoder\Tests\Fakes\Address;
 use Karriere\JsonDecoder\Tests\Fakes\Person;
-use PHPUnit\Framework\TestCase;
 
-class ArrayBindingTest extends TestCase
-{
-    /** @test */
-    public function itBindsAnArray()
-    {
-        $binding  = new ArrayBinding('address', 'addresses', Address::class);
-        $person   = new Person();
-        $property = Property::create($person, 'address');
+beforeEach(function () {
+    $this->binding = new ArrayBinding('address', 'addresses', Address::class);
+    $this->person = new Person();
+    $this->property = Property::create($this->person, 'address');
+});
 
-        $jsonData = [
+it('binds an array', function () {
+    $this->binding->bind(
+        new JsonDecoder(),
+        $this->property,
+        [
             'addresses' => [
                 [
                     'street' => 'Street 1',
-                    'city'   => 'City 1',
+                    'city' => 'City 1',
                 ],
                 [
                     'street' => 'Street 2',
-                    'city'   => 'City 2',
+                    'city' => 'City 2',
                 ],
             ],
-        ];
+        ],
+    );
 
-        $binding->bind(new JsonDecoder(), $jsonData, $property);
+    expect($this->person)
+        ->address()->toBeArray()
+        ->address()->toHaveCount(2);
 
-        $this->assertIsArray($person->address());
-        $this->assertCount(2, $person->address());
-        $this->assertEquals('Street 1', $person->address()[0]->street());
-        $this->assertEquals('City 1', $person->address()[0]->city());
-        $this->assertEquals('Street 2', $person->address()[1]->street());
-        $this->assertEquals('City 2', $person->address()[1]->city());
-    }
+    expect($this->person->address()[0])
+        ->street()->toEqual('Street 1')
+        ->city()->toEqual('City 1');
 
-    /** @test */
-    public function itBindsAnArrayPreservingKeys()
-    {
-        $binding  = new ArrayBinding('address', 'addresses', Address::class);
-        $person   = new Person();
-        $property = Property::create($person, 'address');
+    expect($this->person->address()[1])
+        ->street()->toEqual('Street 2')
+        ->city()->toEqual('City 2');
+});
 
-        $jsonData = [
+it('binds an array and preserves keys', function () {
+    $this->binding->bind(
+        new JsonDecoder(),
+        $this->property,
+        [
             'addresses' => [
                 'address key #1' => [
                     'street' => 'Street 1',
-                    'city'   => 'City 1',
+                    'city' => 'City 1',
                 ],
                 'address key #2' => [
                     'street' => 'Street 2',
-                    'city'   => 'City 2',
+                    'city' => 'City 2',
                 ],
             ],
-        ];
+        ],
+    );
 
-        $binding->bind(new JsonDecoder(), $jsonData, $property);
+    expect($this->person)
+        ->address()->toBeArray()
+        ->address()->toHaveCount(2);
 
-        $this->assertIsArray($person->address());
-        $this->assertCount(2, $person->address());
-        $this->assertEquals('Street 1', $person->address()['address key #1']->street());
-        $this->assertEquals('City 1', $person->address()['address key #1']->city());
-        $this->assertEquals('Street 2', $person->address()['address key #2']->street());
-        $this->assertEquals('City 2', $person->address()['address key #2']->city());
-    }
+    expect($this->person->address()['address key #1'])
+        ->street()->toEqual('Street 1')
+        ->city()->toEqual('City 1');
 
-    /** @test */
-    public function itSkipsANotAvailableField()
-    {
-        $binding  = new ArrayBinding('address', 'addresses', Address::class);
-        $person   = new Person();
-        $property = Property::create($person, 'address');
+    expect($this->person->address()['address key #2'])
+        ->street()->toEqual('Street 2')
+        ->city()->toEqual('City 2');
+});
 
-        $binding->bind(new JsonDecoder(), [], $property);
+it('skips a not available field', function () {
+    $this->binding->bind(new JsonDecoder(), $this->property);
 
-        $this->assertNull($person->address());
-    }
-}
+    expect($this->person)->address()->toBeNull();
+});

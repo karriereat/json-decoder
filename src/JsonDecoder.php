@@ -5,34 +5,30 @@ namespace Karriere\JsonDecoder;
 use Karriere\JsonDecoder\Bindings\DateTimeBinding;
 use Karriere\JsonDecoder\Bindings\FieldBinding;
 use Karriere\JsonDecoder\Bindings\RawBinding;
-use Karriere\JsonDecoder\Exceptions\InvalidBindingException;
 use Karriere\JsonDecoder\Exceptions\InvalidJsonException;
 use Karriere\JsonDecoder\Exceptions\JsonValueException;
 use Karriere\JsonDecoder\Exceptions\NotExistingRootException;
+use PhpDocReader\AnnotationException;
 use PhpDocReader\PhpDocReader;
 use ReflectionClass;
+use ReflectionException;
+use ReflectionNamedType;
 
 class JsonDecoder
 {
     /**
-     * @var array
+     * @var array<class-string, Transformer>
      */
-    private $transformers = [];
+    private array $transformers = [];
 
-    /**
-     * @var bool
-     */
-    private $shouldAutoCase = false;
-
-    public function __construct(bool $shouldAutoCase = false)
+    public function __construct(private bool $shouldAutoCase = false)
     {
-        $this->shouldAutoCase = $shouldAutoCase;
     }
 
     /**
      * registers the given transformer.
      */
-    public function register(Transformer $transformer)
+    public function register(Transformer $transformer): void
     {
         $this->transformers[$transformer->transforms()] = $transformer;
     }
@@ -41,15 +37,16 @@ class JsonDecoder
      * scans the given class for annotated properties and creates the transformer for it
      * at the moment the scanner can detect custom classes and DateTime objects.
      *
-     * @param string $class the class to check
+     * @param  class-string  $class
      *
-     * @return void
+     * @throws AnnotationException
+     * @throws ReflectionException
      */
-    public function scanAndRegister(string $class)
+    public function scanAndRegister(string $class): void
     {
         $bindings = $this->scan($class);
 
-        if (!empty($bindings)) {
+        if (! empty($bindings)) {
             $transformer = $this->createTransformer($class, $bindings);
             $this->register($transformer);
         }
@@ -58,18 +55,12 @@ class JsonDecoder
     /**
      * Decodes the given JSON string into an instance of the given class type.
      *
-     * @param string      $json      the input JSON string
-     * @param string      $classType the class type of the decoded object
-     * @param string|null $root      the root element to decode, if not defined the whole decoded json object will be decoded
-     *
-     * @return mixed the instance of the given class type
-     *
      * @throws InvalidJsonException
      * @throws NotExistingRootException
      * @throws JsonValueException
-     * @throws InvalidBindingException
+     * @throws ReflectionException
      */
-    public function decode(string $json, string $classType, string $root = null)
+    public function decode(string $json, string $classType, string $root = null): mixed
     {
         return $this->decodeArray($this->parseJson($json, $root), $classType);
     }
@@ -77,18 +68,12 @@ class JsonDecoder
     /**
      * Decodes the given JSON string into multiple instances of the given class type.
      *
-     * @param string      $json      the input JSON string
-     * @param string      $classType the class type of the decoded objects
-     * @param string|null $root      the root element to decode, if not defined the whole decoded json object will be decoded
-     *
-     * @return array the list of instances decoded for the given class type
-     *
      * @throws InvalidJsonException
      * @throws NotExistingRootException
      * @throws JsonValueException
-     * @throws InvalidBindingException
+     * @throws ReflectionException
      */
-    public function decodeMultiple(string $json, string $classType, string $root = null)
+    public function decodeMultiple(string $json, string $classType, string $root = null): array
     {
         $data = $this->parseJson($json, $root);
 
@@ -103,19 +88,17 @@ class JsonDecoder
     /**
      * decodes the given array data into an instance of the given class type.
      *
-     * @param array  $jsonArrayData
-     * @param string $classType
-     *
-     * @return mixed an instance of $classType
+     * @throws JsonValueException
+     * @throws ReflectionException
      */
-    public function decodeArray($jsonArrayData, $classType)
+    public function decodeArray(?array $jsonArrayData, string $classType): mixed
     {
         $instance = new $classType();
 
         if (array_key_exists($classType, $this->transformers)) {
-            $instance = $this->transform($this->transformers[$classType], $jsonArrayData, $instance);
+            $instance = $this->transform($this->transformers[$classType], $instance, $jsonArrayData ?? []);
         } else {
-            $instance = $this->transformRaw($jsonArrayData, $instance);
+            $instance = $this->transformRaw($instance, $jsonArrayData ?? []);
         }
 
         return $instance;
@@ -129,15 +112,10 @@ class JsonDecoder
     /**
      * transforms the given json data by using the found transformer.
      *
-     * @param Transformer $transformer   the transformer to use
-     * @param array       $jsonArrayData the actual json data
-     * @param mixed       $instance      the class instance to bind to
-     *
-     * @return mixed|null
-     *
-     * @throws JsonValueException if the json data is not valid
+     * @throws JsonValueException
+     * @throws ReflectionException
      */
-    protected function transform(Transformer $transformer, ?array $jsonArrayData, $instance)
+    protected function transform(Transformer $transformer, object $instance, array $jsonArrayData = []): mixed
     {
         if (empty($jsonArrayData)) {
             return null;
@@ -152,14 +130,10 @@ class JsonDecoder
     /**
      * transforms the given data with raw bindings.
      *
-     * @param mixed $jsonArrayData the actual json data
-     * @param mixed $instance      the class instance to bind to
-     *
-     * @return mixed|null
-     *
-     * @throws JsonValueException if the json data is not valid
+     * @throws JsonValueException
+     * @throws ReflectionException
      */
-    protected function transformRaw($jsonArrayData, $instance)
+    protected function transformRaw(object $instance, array $jsonArrayData): mixed
     {
         if (empty($jsonArrayData)) {
             return null;
@@ -173,15 +147,10 @@ class JsonDecoder
     /**
      * parses the given json string and eventually selects the defined root key.
      *
-     * @param string      $json the json string to parse
-     * @param string|null $root the optional root key
-     *
-     * @return mixed the json data in array format
-     *
      * @throws InvalidJsonException     if the json data cannot be parsed
      * @throws NotExistingRootException if the defined root key does not exist
      */
-    private function parseJson(string $json, string $root = null)
+    private function parseJson(string $json, ?string $root = null): array
     {
         $jsonData = json_decode($json, true);
 
@@ -189,8 +158,12 @@ class JsonDecoder
             throw new InvalidJsonException();
         }
 
-        if (!is_null($root)) {
-            if (!array_key_exists($root, $jsonData)) {
+        if (! is_array($jsonData)) {
+            return [];
+        }
+
+        if (! is_null($root)) {
+            if (! array_key_exists($root, $jsonData)) {
                 throw new NotExistingRootException($root);
             }
 
@@ -203,31 +176,36 @@ class JsonDecoder
     /**
      * scans the given class and creates bindings for annotated properties.
      *
-     * @param string $class the class to scan
+     * @param  class-string  $class
+     * @return array<int, Binding>
      *
-     * @return array the list of generated bindings
-     *
-     * @throws \ReflectionException
+     * @throws AnnotationException
+     * @throws ReflectionException
      */
-    private function scan(string $class)
+    private function scan(string $class): array
     {
-        $bindings        = [];
+        $bindings = [];
         $reflectionClass = new ReflectionClass($class);
 
         foreach ($reflectionClass->getProperties() as $property) {
             $reader = new PhpDocReader();
 
             $propertyName = $property->getName();
-            $propertyType = $reader->getPropertyClass($property);
 
-            if (!is_null($propertyType)) {
+            if ($property->hasType() && $property->getType() instanceof ReflectionNamedType) {
+                $propertyType = ! $property->getType()->isBuiltin() ? $property->getType()->getName() : null;
+            } else {
+                $propertyType = $reader->getPropertyClass($property);
+            }
+
+            if (! is_null($propertyType)) {
                 if ($propertyType === 'DateTime') {
-                    $bindings[] = new DateTimeBinding($propertyName, $propertyName);
+                    $bindings[] = new DateTimeBinding(property: $propertyName, jsonField: $propertyName);
                 } else {
-                    $bindings[] = new FieldBinding($propertyName, $propertyName, $propertyType);
+                    $bindings[] = new FieldBinding(property: $propertyName, jsonField: $propertyName, type: $propertyType);
                 }
             } else {
-                $bindings[] = new RawBinding($propertyName);
+                $bindings[] = new RawBinding(property: $propertyName);
             }
         }
 
@@ -237,29 +215,31 @@ class JsonDecoder
     /**
      * creates the transformer instance for the given class and generated bindings.
      *
-     * @param string $class    the class the transformer can handle
-     * @param array  $bindings the bindings that need to be registered
+     * @param  class-string  $class
+     * @param  array<int, Binding>  $bindings
      */
     private function createTransformer(string $class, array $bindings): Transformer
     {
-        return new class($class, $bindings) implements Transformer {
-            private $class;
-            private $bindings;
-
-            public function __construct($class, $bindings)
+        return new class ($class, $bindings) implements Transformer {
+            /**
+             * @param  class-string  $class
+             * @param  array<int, Binding>  $bindings
+             */
+            public function __construct(private string $class, private array $bindings)
             {
-                $this->class    = $class;
-                $this->bindings = $bindings;
             }
 
-            public function register(ClassBindings $classBindings)
+            public function register(ClassBindings $classBindings): void
             {
                 foreach ($this->bindings as $binding) {
                     $classBindings->register($binding);
                 }
             }
 
-            public function transforms()
+            /**
+             * @return class-string
+             */
+            public function transforms(): string
             {
                 return $this->class;
             }
