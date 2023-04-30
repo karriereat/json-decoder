@@ -1,4 +1,4 @@
-name: CI
+name: Integrate
 
 on:
   push:
@@ -18,23 +18,25 @@ jobs:
     name: PHP@${{ matrix.php }}
 
     steps:
-      - uses: shivammathur/setup-php@v2
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
 
-      - uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-      - name: Validate composer.json and composer.lock
+      - name: Validate Composer configuration
         run: composer validate
 
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress --no-suggest
 
-      - name: Lint code
+      - name: Detect coding standards violations
         run: composer run-script lint
 
-      - name: Analyse code
+      - name: Perform static analysis
         run: composer run-script analyse
 
-      - name: Test code
+      - name: Execute unit tests
         run: composer run-script test
