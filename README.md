@@ -1,6 +1,6 @@
 <a href="https://www.karriere.at/" target="_blank"><img width="200" src="https://raw.githubusercontent.com/karriereat/.github/main/profile/logo.svg"></a>
 <span>&nbsp;&nbsp;&nbsp;</span>
-![](https://github.com/karriereat/json-decoder/workflows/CI/badge.svg)
+[![Integrate workflow status](https://github.com/karriereat/json-decoder/actions/workflows/integrate.yml/badge.svg)](https://github.com/karriereat/json-decoder/actions/workflows/integrate.yml)
 [![Packagist Downloads](https://img.shields.io/packagist/dt/karriere/json-decoder.svg?style=flat-square)](https://packagist.org/packages/karriere/json-decoder)
 
 # JsonDecoder for PHP
