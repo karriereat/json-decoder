@@ -30,3 +30,6 @@ indent_size = 2
 [composer.json]
 indent_style = space
 indent_size = 4
+
+[LICENSE]
+indent_size = 3
