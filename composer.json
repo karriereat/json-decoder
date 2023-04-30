@@ -21,11 +21,11 @@
         }
     },
     "require": {
-        "php": "8.0.* | 8.1.* | 8.2.*",
+        "php": "^8.0 || ^8.1 || ^8.2",
         "php-di/phpdoc-reader": "^2.1"
     },
     "require-dev": {
-        "laravel/pint": "^1.5 | ^1.6",
+        "laravel/pint": "^1.5 || ^1.6",
         "pestphp/pest": "^1.22",
         "phpstan/phpstan": "^1.10"
     },
@@ -34,10 +34,10 @@
         "lint": "pint --test",
         "lint:verbose": "pint -v --test",
         "fix": "pint",
-        "test": "vendor/bin/pest",
-        "coverage": "vendor/bin/pest --coverage --ci --coverage-html coverage --coverage-clover coverage.xml --log-junit junit.xml",
-        "report": "vendor/bin/pest --coverage",
-        "report:html": "vendor/bin/pest --coverage --coverage-html coverage"
+        "test": "pest",
+        "coverage": "pest --coverage --ci --coverage-html coverage --coverage-clover coverage.xml --log-junit junit.xml",
+        "report": "pest --coverage",
+        "report:html": "pest --coverage --coverage-html coverage"
     },
     "config": {
         "sort-packages": true,
