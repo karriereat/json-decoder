@@ -12,7 +12,9 @@ class FieldBinding extends Binding
     {
         if ($this->jsonField && array_key_exists($this->jsonField, $jsonData) && $this->type) {
             $data = $jsonData[$this->jsonField];
-            $property->set($jsonDecoder->decodeArray($data, $this->type));
+            if (is_null($data) || is_array($data)) {
+                $property->set($jsonDecoder->decodeArray($data, $this->type));
+            }
         }
     }
 }

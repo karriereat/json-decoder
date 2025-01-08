@@ -14,17 +14,11 @@ it('is able to set all sorts of untyped properties', function (string $propertyN
         expect($sample->{$propertyName})->toEqual('value');
     }
 })->with([
-    'public' => [
-        'name' => 'publicProperty',
-    ],
-    'protected' => [
-        'name' => 'protectedProperty',
-    ],
-    'private' => [
-        'name' => 'privateProperty',
-    ],
+    'public' => ['publicProperty'],
+    'protected' => ['protectedProperty'],
+    'private' => ['privateProperty'],
     'new' => [
-        'name' => 'newProperty',
+        'newProperty',
         'methodAccess' => false,
     ],
 ]);

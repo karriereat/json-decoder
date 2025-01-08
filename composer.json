@@ -21,13 +21,13 @@
         }
     },
     "require": {
-        "php": "8.0.* | 8.1.* | 8.2.*",
+        "php": "8.0.* | 8.1.* | 8.2.* | 8.3.* | 8.4.*",
         "php-di/phpdoc-reader": "^2.1"
     },
     "require-dev": {
         "laravel/pint": "^1.5 | ^1.6",
-        "pestphp/pest": "^1.22",
-        "phpstan/phpstan": "^1.10"
+        "pestphp/pest": "^1.22 | ^2.0 | ^3.0",
+        "phpstan/phpstan": "^1.10 | ^2.0"
     },
     "scripts": {
         "analyse": "phpstan analyse --memory-limit 512M",

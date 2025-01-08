@@ -60,7 +60,7 @@ class JsonDecoder
      * @throws JsonValueException
      * @throws ReflectionException
      */
-    public function decode(string $json, string $classType, string $root = null): mixed
+    public function decode(string $json, string $classType, ?string $root = null): mixed
     {
         return $this->decodeArray($this->parseJson($json, $root), $classType);
     }
@@ -73,13 +73,13 @@ class JsonDecoder
      * @throws JsonValueException
      * @throws ReflectionException
      */
-    public function decodeMultiple(string $json, string $classType, string $root = null): array
+    public function decodeMultiple(string $json, string $classType, ?string $root = null): array
     {
         $data = $this->parseJson($json, $root);
 
         return array_map(
             function ($element) use ($classType) {
-                return $this->decodeArray($element, $classType);
+                return is_array($element) ? $this->decodeArray($element, $classType) : $this->decodeArray(null, $classType);
             },
             $data
         );
