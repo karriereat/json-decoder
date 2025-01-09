@@ -22,6 +22,9 @@ class DateTimeBinding extends Binding
     public function validate(array $jsonData): bool
     {
         if ($this->jsonField && array_key_exists($this->jsonField, $jsonData) && ! empty($jsonData[$this->jsonField])) {
+            if (! is_string($jsonData[$this->jsonField])) {
+                return false;
+            }
             return DateTime::createFromFormat($this->dateTimeFormat, $jsonData[$this->jsonField]) !== false;
         }
 
@@ -31,10 +34,12 @@ class DateTimeBinding extends Binding
     public function bind(JsonDecoder $jsonDecoder, Property $property, array $jsonData = []): void
     {
         if ($this->jsonField && array_key_exists($this->jsonField, $jsonData)) {
-            $dateTimeObject = DateTime::createFromFormat($this->dateTimeFormat, $jsonData[$this->jsonField]);
+            if (is_string($jsonData[$this->jsonField])) {
+                $dateTimeObject = DateTime::createFromFormat($this->dateTimeFormat, $jsonData[$this->jsonField]);
 
-            if ($dateTimeObject !== false) {
-                $property->set($dateTimeObject);
+                if ($dateTimeObject !== false) {
+                    $property->set($dateTimeObject);
+                }
             }
         }
     }

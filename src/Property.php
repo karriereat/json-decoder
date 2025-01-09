@@ -108,8 +108,10 @@ class Property
 
         if ($reflectionType instanceof ReflectionUnionType) {
             foreach ($reflectionType->getTypes() as $type) {
-                if ($type->getName() === $valueType) {
-                    return true;
+                if ($type instanceof ReflectionNamedType) {
+                    if ($type->getName() === $valueType) {
+                        return true;
+                    }
                 }
             }
         }

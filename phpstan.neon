@@ -2,4 +2,6 @@ parameters:
     paths:
         - src
     level: max
-    checkMissingIterableValueType: false
+    checkExplicitMixed: false
+    ignoreErrors:
+        - identifier: missingType.iterableValue

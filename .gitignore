@@ -2,5 +2,6 @@ vendor/
 coverage/
 composer.lock
 .phpunit.result.cache
+.phpunit.cache
 coverage.xml
 junit.xml
