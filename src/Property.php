@@ -26,7 +26,6 @@ class Property
 
         try {
             $property = new ReflectionProperty($instance, $propertyName);
-            $property->setAccessible(true);
         } catch (ReflectionException) {
         }
 
@@ -44,7 +43,6 @@ class Property
                 $property = new ReflectionProperty(get_class($this->instance), $this->propertyName);
 
                 if ($this->valueHasCorrectType($property, $value)) {
-                    $property->setAccessible(true);
                     $property->setValue($this->instance, $value);
                 }
             } catch (ReflectionException) {
